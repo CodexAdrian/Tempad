@@ -1,8 +1,8 @@
-# Fabric Example Mod
+# Tempad
 
-## Setup
+## Description
 
-For setup instructions please see the [fabric wiki page](https://fabricmc.net/wiki/tutorial:setup) that relates to the IDE that you are using.
+Inspiried by the Loki Series, this mod seeks to add the Tempad, a device that allows the user to create a portal to saved locations on said device. 
 
 ## License
 
