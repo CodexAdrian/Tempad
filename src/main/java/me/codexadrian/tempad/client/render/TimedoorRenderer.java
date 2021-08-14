@@ -6,8 +6,8 @@ import me.codexadrian.tempad.TempadClient;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
-import net.minecraft.world.entity.projectile.TimedoorEntity;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.projectile.TimedoorEntity;
 
 public class TimedoorRenderer extends EntityRenderer<TimedoorEntity> {
     public TimedoorRenderer(EntityRendererProvider.Context context) {
@@ -18,7 +18,7 @@ public class TimedoorRenderer extends EntityRenderer<TimedoorEntity> {
     public void render(TimedoorEntity entity, float f, float g, PoseStack poseStack, MultiBufferSource multiBufferSource, int i) {
         poseStack.pushPose();
         var model = poseStack.last().pose();
-        makeBoxBasedOnPlayerBecauseAshSaidSo(model, multiBufferSource, 1.4F, 2.3F, .4F);
+        makeBoxBasedOnPlayerBecauseAshSaidSo(model, multiBufferSource, 1.4F, 2.3F, .4F, i);
         poseStack.popPose();
         super.render(entity, f, g, poseStack, multiBufferSource, i);
 
@@ -29,44 +29,48 @@ public class TimedoorRenderer extends EntityRenderer<TimedoorEntity> {
         return null;
     }
 
-    public void makeBoxBasedOnPlayerBecauseAshSaidSo(Matrix4f model, MultiBufferSource multiBufferSource, float width, float height, float depth) {
+    public void makeBoxBasedOnPlayerBecauseAshSaidSo(Matrix4f model, MultiBufferSource multiBufferSource, float width, float height, float depth, int i) {
         float xBound = width/2f;
         depth = -depth;
         var buffer = multiBufferSource.getBuffer(TempadClient.TIMEDOOR_LAYER);
         //Front
-        buffer.vertex(model, -xBound, height, 0f).uv(0,0).endVertex();
-        buffer.vertex(model, -xBound, 0, 0).uv(0,1).endVertex();
-        buffer.vertex(model, xBound, 0, 0).uv(1,1).endVertex();
-        buffer.vertex(model, xBound, height, 0).uv(1,0).endVertex();
+        float red = 0.0F;
+        float green = 0.0F;
+        float blue = 0.0F;
+        float alpha = 1F;
+        buffer.vertex(model, -xBound, height, 0).color(red, green, blue, alpha).uv(0,0).uv2(i).endVertex();
+        buffer.vertex(model, -xBound, 0, 0).color(red, green, blue, alpha).uv(0,1).uv2(i).endVertex();
+        buffer.vertex(model, xBound, 0, 0).color(red, green, blue, alpha).uv(1,1).uv2(i).endVertex();
+        buffer.vertex(model, xBound, height, 0).color(red, green, blue, alpha).uv(1,0).uv2(i).endVertex();
 
         //Back
-        buffer.vertex(model, xBound, height, depth).uv(0,0).endVertex();
-        buffer.vertex(model, xBound, 0, depth).uv(0,1).endVertex();
-        buffer.vertex(model, -xBound, 0, depth).uv(1,1).endVertex();
-        buffer.vertex(model, -xBound, height, depth).uv(1,0).endVertex();
+        buffer.vertex(model, xBound, height, depth).color(red, green, blue, alpha).uv(0,0).uv2(i).endVertex();
+        buffer.vertex(model, xBound, 0, depth).color(red, green, blue, alpha).uv(0,1).uv2(i).endVertex();
+        buffer.vertex(model, -xBound, 0, depth).color(red, green, blue, alpha).uv(1,1).uv2(i).endVertex();
+        buffer.vertex(model, -xBound, height, depth).color(red, green, blue, alpha).uv(1,0).uv2(i).endVertex();
 
         //Top
-        buffer.vertex(model, -xBound, height, depth).uv(0,0).endVertex();
-        buffer.vertex(model, -xBound, height, 0).uv(0,1).endVertex();
-        buffer.vertex(model, xBound, height, 0).uv(1,1).endVertex();
-        buffer.vertex(model, xBound, height, depth).uv(1,0).endVertex();
+        buffer.vertex(model, -xBound, height, depth).color(red, green, blue, alpha).uv(0,0).uv2(i).endVertex();
+        buffer.vertex(model, -xBound, height, 0).color(red, green, blue, alpha).uv(0,1).uv2(i).endVertex();
+        buffer.vertex(model, xBound, height, 0).color(red, green, blue, alpha).uv(1,1).uv2(i).endVertex();
+        buffer.vertex(model, xBound, height, depth).color(red, green, blue, alpha).uv(1,0).uv2(i).endVertex();
 
         //Bottom
-        buffer.vertex(model, -xBound, 0,0).uv(0,0).endVertex();
-        buffer.vertex(model, -xBound, 0, depth).uv(0,1).endVertex();
-        buffer.vertex(model, xBound, 0, depth).uv(1, 1).endVertex();
-        buffer.vertex(model, xBound, 0, 0).uv(1,0).endVertex();
+        buffer.vertex(model, -xBound, 0,0).color(red, green, blue, alpha).uv(0,0).uv2(i).endVertex();
+        buffer.vertex(model, -xBound, 0, depth).color(red, green, blue, alpha).uv(0,1).uv2(i).endVertex();
+        buffer.vertex(model, xBound, 0, depth).color(red, green, blue, alpha).uv(1, 1).uv2(i).endVertex();
+        buffer.vertex(model, xBound, 0, 0).color(red, green, blue, alpha).uv(1,0).uv2(i).endVertex();
 
         //Left
-        buffer.vertex(model, -xBound, height, depth).uv(0,0).endVertex();
-        buffer.vertex(model, -xBound, 0, depth).uv(0,1).endVertex();
-        buffer.vertex(model, -xBound, 0, 0).uv(1,1).endVertex();
-        buffer.vertex(model, -xBound, height, 0).uv(1,0).endVertex();
+        buffer.vertex(model, -xBound, height, depth).color(red, green, blue, alpha).uv(0,0).uv2(i).endVertex();
+        buffer.vertex(model, -xBound, 0, depth).color(red, green, blue, alpha).uv(0,1).uv2(i).endVertex();
+        buffer.vertex(model, -xBound, 0, 0).color(red, green, blue, alpha).uv(1,1).uv2(i).endVertex();
+        buffer.vertex(model, -xBound, height, 0).color(red, green, blue, alpha).uv(1,0).uv2(i).endVertex();
 
         //Right
-        buffer.vertex(model, xBound, height, 0).uv(0,0).endVertex();
-        buffer.vertex(model, xBound, 0, 0).uv(0,1).endVertex();
-        buffer.vertex(model, xBound, 0, depth).uv(1,1).endVertex();
-        buffer.vertex(model, xBound, height, depth).uv(1,0).endVertex();
+        buffer.vertex(model, xBound, height, 0).color(red, green, blue, alpha).uv(0,0).uv2(i).endVertex();
+        buffer.vertex(model, xBound, 0, 0).color(red, green, blue, alpha).uv(0,1).uv2(i).endVertex();
+        buffer.vertex(model, xBound, 0, depth).color(red, green, blue, alpha).uv(1,1).uv2(i).endVertex();
+        buffer.vertex(model, xBound, height, depth).color(red, green, blue, alpha).uv(1,0).uv2(i).endVertex();
     }
 }

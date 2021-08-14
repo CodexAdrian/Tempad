@@ -11,7 +11,7 @@ import net.minecraft.client.renderer.ShaderInstance;
 
 public class TempadClient implements ClientModInitializer {
     public static ShaderInstance timedoorShader;
-    public static final RenderType TIMEDOOR_LAYER = RenderType.create("timedoor", DefaultVertexFormat.POSITION_TEX, VertexFormat.Mode.QUADS, 256, false, true, RenderType.CompositeState.builder().setShaderState(new RenderStateShard.ShaderStateShard(() -> timedoorShader)).setTransparencyState(RenderStateShard.TRANSLUCENT_TRANSPARENCY).createCompositeState(false));
+    public static final RenderType TIMEDOOR_LAYER = RenderType.create("timedoor", DefaultVertexFormat.POSITION_COLOR_TEX_LIGHTMAP, VertexFormat.Mode.QUADS, 256, false, true, RenderType.CompositeState.builder().setShaderState(new RenderStateShard.ShaderStateShard(() -> timedoorShader)).setTransparencyState(RenderStateShard.LIGHTNING_TRANSPARENCY).createCompositeState(false));
 
     @Override
     public void onInitializeClient() {

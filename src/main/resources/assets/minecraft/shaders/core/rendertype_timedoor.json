@@ -1,16 +1,16 @@
 {
   "blend": {
     "func": "add",
-    "srcrgb": "1",
-    "dstrgb": "1",
-    "srcalpha": "srcalpha",
-    "dstalpha": "1-srcalpha"
+    "srcrgb": "srcalpha",
+    "dstrgb": "1"
   },
   "vertex": "rendertype_timedoor",
   "fragment": "rendertype_timedoor",
   "attributes": [
     "Position",
-    "UV0"
+    "Color",
+    "UV0",
+    "UV2"
   ],
   "uniforms": [
     { "name": "ModelViewMat", "type": "matrix4x4", "count": 16, "values": [ 1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0 ] },

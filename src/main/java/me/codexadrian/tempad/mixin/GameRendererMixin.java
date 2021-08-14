@@ -29,7 +29,7 @@ public class GameRendererMixin {
     private void reloadShaders(ResourceManager resourceManager, CallbackInfo ci) {
         List<Pair<ShaderInstance, Consumer<ShaderInstance>>> list = new ArrayList<>();
         try {
-            list.add(Pair.of(new ShaderInstance(resourceManager, "rendertype_timedoor", DefaultVertexFormat.BLOCK), (shaderInstance) -> TempadClient.timedoorShader = shaderInstance));
+                    list.add(Pair.of(new ShaderInstance(resourceManager, "rendertype_timedoor", DefaultVertexFormat.POSITION_COLOR_TEX_LIGHTMAP), (shaderInstance) -> TempadClient.timedoorShader = shaderInstance));
         } catch (Exception e) {
             list.forEach(pair -> pair.getFirst().close());
             throw new RuntimeException("could not reload shaders", e);
