@@ -1,30 +1,37 @@
 package me.codexadrian.tempad;
 
+import com.google.gson.JsonSyntaxException;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.PostChain;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.server.packs.resources.ResourceManagerReloadListener;
 
+import java.io.IOException;
+
 public class SmudgeReloader implements ResourceManagerReloadListener {
+
+    public PostChain smudge;
+
     @Override
     public void onResourceManagerReload(ResourceManager resourceManager) {
-/*        if (this.entityEffect != null) {
-            this.entityEffect.close();
+        var minecraft = Minecraft.getInstance();
+
+        if (this.smudge != null) {
+            this.smudge.close();
         }
 
-        ResourceLocation resourceLocation = new ResourceLocation("shaders/post/entity_outline.json");
+        ResourceLocation resourceLocation = new ResourceLocation(Tempad.MODID, "shaders/post/smudge.json");
 
         try {
-            this.entityEffect = new PostChain(this.minecraft.getTextureManager(), this.minecraft.getResourceManager(), this.minecraft.getMainRenderTarget(), resourceLocation);
-            this.entityEffect.resize(this.minecraft.getWindow().getWidth(), this.minecraft.getWindow().getHeight());
-            this.entityTarget = this.entityEffect.getTempTarget("final");
+            this.smudge = new PostChain(minecraft.getTextureManager(), resourceManager, minecraft.getMainRenderTarget(), resourceLocation);
+            this.smudge.resize(minecraft.getWindow().getWidth(), minecraft.getWindow().getHeight());
         } catch (IOException var3) {
-            LOGGER.warn((String)"Failed to load shader: {}", (Object)resourceLocation, (Object)var3);
-            this.entityEffect = null;
-            this.entityTarget = null;
+            Tempad.LOGGER.warn("Failed to load shader: {}", resourceLocation, var3);
+            this.smudge = null;
         } catch (JsonSyntaxException var4) {
-            LOGGER.warn((String)"Failed to parse shader: {}", (Object)resourceLocation, (Object)var4);
-            this.entityEffect = null;
-            this.entityTarget = null;
+            Tempad.LOGGER.warn("Failed to parse shader: {}", resourceLocation, var4);
+            this.smudge = null;
         }
-    }*/
     }
 }
