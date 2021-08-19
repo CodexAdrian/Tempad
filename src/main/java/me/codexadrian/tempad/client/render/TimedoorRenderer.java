@@ -4,31 +4,60 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Matrix4f;
 import com.mojang.math.Vector3f;
 import me.codexadrian.tempad.TempadClient;
-import net.minecraft.Util;
+import me.codexadrian.tempad.entity.TimedoorEntity;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.resources.ResourceLocation;
-import me.codexadrian.tempad.entity.TimedoorEntity;
+import net.minecraft.util.Mth;
 
 public class TimedoorRenderer extends EntityRenderer<TimedoorEntity> {
+
     public TimedoorRenderer(EntityRendererProvider.Context context) {
         super(context);
     }
-    public float width = 1.4F;
-    public float height = 2.3F;
-    public float depth = .4F;
-    public int animationLengthInMilli = 400;
 
     @Override
-    public void render(TimedoorEntity entity, float f, float g, PoseStack poseStack, MultiBufferSource multiBufferSource, int i) {
-        animateOpening(entity.birthTime);
+    public void render(TimedoorEntity entity, float yaw, float deltaTime, PoseStack poseStack, MultiBufferSource multiBufferSource, int light) {
+        float width = 1.4F;
+        float height = 2.3F;
+        float depth = .4F;
+        int closingTime = entity.getClosingTime();
+        int tickLength = TimedoorEntity.ANIMATION_LENGTH;
+        int phaseLength = (tickLength)/2;
+        int ticks = entity.tickCount;
+        float animation = (ticks + deltaTime) / tickLength;
+
+        if (ticks < phaseLength) {
+            width = Mth.lerp(animation * 2, 0, width);
+            height = .2F;
+        }
+
+        if(ticks >= phaseLength && ticks < tickLength) {
+            height = Mth.lerp((animation - 0.5F) * 2, .2F, height);
+        }
+
+        if(closingTime != -1) {
+            if (ticks > closingTime && ticks < closingTime + phaseLength) {
+                height = Mth.lerp(1 - (animation - (float) closingTime / tickLength) * 2, .2F, height);
+            }
+
+            if (ticks >= closingTime + phaseLength) {
+                width = Mth.lerp(1 - (animation - (float) closingTime / tickLength - 0.5F) * 2, 0, width);
+                height = .2F;
+            }
+        } else if (ticks > tickLength){
+            width = 1.4F;
+            height = 2.3F;
+            depth = .4F;
+        }
+
         poseStack.pushPose();
         poseStack.mulPose(Vector3f.YP.rotationDegrees(entity.getYRot()));
         poseStack.translate(0, 1.15F, 0);
         var model = poseStack.last().pose();
-        makeBoxBasedOnPlayerBecauseAshSaidSo(model, multiBufferSource, width, height, depth, i);
-        super.render(entity, f, g, poseStack, multiBufferSource, i);
+        makeBoxBasedOnPlayerBecauseAshSaidSo(model, multiBufferSource, width, height, depth, light);
+        super.render(entity, yaw, deltaTime, poseStack, multiBufferSource, light);
         poseStack.popPose();
     }
 
@@ -82,7 +111,7 @@ public class TimedoorRenderer extends EntityRenderer<TimedoorEntity> {
         buffer.vertex(model, xBound, -yBound, zBound).color(red, green, blue, alpha).uv(1,1).uv2(i).endVertex();
         buffer.vertex(model, xBound, yBound, zBound).color(red, green, blue, alpha).uv(1,0).uv2(i).endVertex();
     }
-
+/*
     public void animateClosing(long time) {
         int phaseLength = (animationLengthInMilli)/2;
         long animationTime = (Util.getMillis() - time);
@@ -125,5 +154,5 @@ public class TimedoorRenderer extends EntityRenderer<TimedoorEntity> {
             this.depth = .4F;
         }
 
-    }
+    }*/
 }
