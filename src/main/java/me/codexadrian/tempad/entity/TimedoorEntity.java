@@ -24,6 +24,8 @@ import org.jetbrains.annotations.Nullable;
 import java.util.List;
 import java.util.UUID;
 
+import static me.codexadrian.tempad.Tempad.ORANGE;
+
 public class TimedoorEntity extends Entity {
     public static final int ANIMATION_LENGTH = 8;
     private static final EntityDataAccessor<Integer> CLOSING_TIME = SynchedEntityData.defineId(TimedoorEntity.class, EntityDataSerializers.INT);
@@ -31,6 +33,7 @@ public class TimedoorEntity extends Entity {
     private UUID owner = null;
     private UUID linkedPortalId = null;
     private TimedoorEntity linkedPortalEntity = null;
+    private int color = ORANGE;
 
     public TimedoorEntity(EntityType<TimedoorEntity> entityType, Level level) {
         super(entityType, level);
@@ -49,6 +52,7 @@ public class TimedoorEntity extends Entity {
         }
         this.setClosingTime(compoundTag.getInt("closing_time"));
         this.setOwner(compoundTag.getUUID("owner"));
+        this.setColor(compoundTag.getInt("color"));
         if (compoundTag.contains("linked_portal")) {
             this.setLinkedPortalId(compoundTag.getUUID("linked_portal"));
         }
@@ -61,6 +65,7 @@ public class TimedoorEntity extends Entity {
         }
         compoundTag.putInt("closing_time", getClosingTime());
         compoundTag.putUUID("owner", getOwner());
+        compoundTag.putInt("color", getColor());
         if (getLinkedPortalId() != null) {
             compoundTag.putUUID("linked_portal", getLinkedPortalId());
         }
@@ -93,7 +98,6 @@ public class TimedoorEntity extends Entity {
                     if(getLinkedPortalEntity() != null) getLinkedPortalEntity().resetClosingTime();
                     this.resetClosingTime();
 
-                    //TODO do cool thing up and ash and gravy said to do
                     if (entity instanceof Player player) {
                         if (player.getUUID().equals(getOwner())) {
                             this.setClosingTime(this.tickCount + 60);
@@ -162,6 +166,14 @@ public class TimedoorEntity extends Entity {
     public void setLinkedPortalId(UUID id) {
         this.linkedPortalId = id;
         this.linkedPortalEntity = null;
+    }
+
+    public void setColor(int color) {
+        this.color = color;
+    }
+
+    public int getColor() {
+        return this.color;
     }
 
     public void resetClosingTime() {

@@ -2,7 +2,7 @@ package me.codexadrian.tempad.items;
 
 import io.github.cottonmc.cotton.gui.client.CottonClientScreen;
 import me.codexadrian.tempad.Tempad;
-import me.codexadrian.tempad.client.gui.TempadGuiDescription;
+import me.codexadrian.tempad.client.gui.MainTempadScreenDesc;
 import me.codexadrian.tempad.entity.TimedoorEntity;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
@@ -13,6 +13,8 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 
+import static me.codexadrian.tempad.Tempad.ORANGE;
+
 public class TempadItem extends Item {
 
     public TempadItem(Properties properties) {
@@ -21,8 +23,15 @@ public class TempadItem extends Item {
 
     @Override
     public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand interactionHand) {
+        ItemStack stack = player.getItemInHand(interactionHand);
+        int color = ORANGE;
+        if(stack.hasTag()) {
+            color = stack.getTag().contains("color") ? stack.getTag().getInt("color") : ORANGE;
+        }
+
         if(level.isClientSide) {
-            Minecraft.getInstance().setScreen(new CottonClientScreen(new TempadGuiDescription(interactionHand, player.getItemInHand(interactionHand))));
+            Minecraft.getInstance().setScreen(new CottonClientScreen(new MainTempadScreenDesc(color, player, interactionHand)));
+            //Minecraft.getInstance().setScreen(new CottonClientScreen(new TempadGuiDescription(interactionHand, player.getItemInHand(interactionHand))));
         }
 
         return super.use(level, player, interactionHand);

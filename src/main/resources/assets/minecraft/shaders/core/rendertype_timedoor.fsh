@@ -21,8 +21,8 @@ vec3 adjustColor(vec3 color, float light) {
 
 void main() {
     float light = length(lightmap/255) * .5;
-    vec3 center = vec3(1, .4, .1) * .03;
-    vec3 edge = vec3(1, .4, .1) * .3;
+    vec3 center = color.rgb * .03;
+    vec3 edge = color.rgb * .3;
     vec3 adjustedEdge = adjustColor(edge, light);
     float x = abs(texCoord.s - 0.5) * 2;
     float y = abs(texCoord.t - 0.5) * 2;

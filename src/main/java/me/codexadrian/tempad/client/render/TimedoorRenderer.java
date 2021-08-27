@@ -11,6 +11,8 @@ import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 
+import java.awt.*;
+
 public class TimedoorRenderer extends EntityRenderer<TimedoorEntity> {
 
     public TimedoorRenderer(EntityRendererProvider.Context context) {
@@ -56,7 +58,7 @@ public class TimedoorRenderer extends EntityRenderer<TimedoorEntity> {
         poseStack.mulPose(Vector3f.YP.rotationDegrees(entity.getYRot()));
         poseStack.translate(0, 1.15F, 0);
         var model = poseStack.last().pose();
-        makeBoxBasedOnPlayerBecauseAshSaidSo(model, multiBufferSource, width, height, depth, light);
+        makeBoxBasedOnPlayerBecauseAshSaidSo(model, multiBufferSource, width, height, depth, light, Color.getColor("timedoorColor", entity.getColor()));
         super.render(entity, yaw, deltaTime, poseStack, multiBufferSource, light);
         poseStack.popPose();
     }
@@ -66,15 +68,15 @@ public class TimedoorRenderer extends EntityRenderer<TimedoorEntity> {
         return null;
     }
 
-    public void makeBoxBasedOnPlayerBecauseAshSaidSo(Matrix4f model, MultiBufferSource multiBufferSource, float width, float height, float depth, int i) {
+    public void makeBoxBasedOnPlayerBecauseAshSaidSo(Matrix4f model, MultiBufferSource multiBufferSource, float width, float height, float depth, int i, Color color) {
         float xBound = width * 0.5F;
         float yBound = height * 0.5F;
         float zBound = -(depth * 0.5F);
         var buffer = multiBufferSource.getBuffer(TempadClient.TIMEDOOR_LAYER);
         //Front
-        float red = 0.0F;
-        float green = 0.0F;
-        float blue = 0.0F;
+        float red = color.getRed()/255F;
+        float green = color.getGreen()/255F;
+        float blue = color.getBlue()/255F;
         float alpha = 1F;
         buffer.vertex(model, -xBound, yBound, -zBound).color(red, green, blue, alpha).uv(0,0).uv2(i).endVertex();
         buffer.vertex(model, -xBound, -yBound, -zBound).color(red, green, blue, alpha).uv(0,1).uv2(i).endVertex();
