@@ -9,6 +9,8 @@ import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.fabricmc.fabric.api.object.builder.v1.entity.FabricEntityTypeBuilder;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Registry;
+import net.minecraft.nbt.ListTag;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.EntityDimensions;
@@ -17,14 +19,15 @@ import net.minecraft.world.entity.MobCategory;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.awt.*;
-import java.util.Arrays;
+import java.nio.charset.StandardCharsets;
 
 public class Tempad implements ModInitializer {
-	public static final int ORANGE = 0xFF_ff8400;
+	public static final int ORANGE = 0xFF_ff6f00;
 	public static final String MODID = "tempad";
 	public static final EntityType<TimedoorEntity> TIMEDOOR_ENTITY_ENTITY_TYPE = FabricEntityTypeBuilder.create(MobCategory.MISC, TimedoorEntity::new).dimensions(EntityDimensions.scalable(.4F,2.3F)).build();
 	public static final TempadItem TEMPAD = new TempadItem(new Item.Properties().stacksTo(1).tab(CreativeModeTab.TAB_TOOLS));
@@ -36,7 +39,6 @@ public class Tempad implements ModInitializer {
 	public void onInitialize() {
 		Registry.register(Registry.ENTITY_TYPE, new ResourceLocation(MODID, "timedoor"), TIMEDOOR_ENTITY_ENTITY_TYPE);
 		Registry.register(Registry.ITEM, new ResourceLocation(MODID, "tempad"), TEMPAD);
-
 		ServerPlayNetworking.registerGlobalReceiver(SET_COLOR_PACKET, (server, player, handler, buf, responseSender) -> {
 			int color = buf.readInt();
 			InteractionHand hand = buf.readEnum(InteractionHand.class);
@@ -47,22 +49,22 @@ public class Tempad implements ModInitializer {
 		});
 
 		ServerPlayNetworking.registerGlobalReceiver(TIMEDOOR_PACKET, (server, player, handler, buf, responseSender) -> {
+			ResourceKey<Level> resourceKey = ResourceKey.create(Registry.DIMENSION_REGISTRY, buf.readResourceLocation());
 			BlockPos target = buf.readBlockPos();
-			server.execute(() -> TempadItem.summonTimeDoor(target, player));
+			server.execute(() -> TempadItem.summonTimeDoor(new TempadLocation(null, resourceKey, target), player));
 		});
 
 		ServerPlayNetworking.registerGlobalReceiver(LOCATION_PACKET, (server, player, handler, buf, responseSender) -> {
-			long longPos = player.blockPosition().asLong();
+			int index = buf.readInt();
+			String name = (String) buf.readCharSequence(index, StandardCharsets.UTF_8);
 			InteractionHand hand = buf.readEnum(InteractionHand.class);
+			var tempadLocation = new TempadLocation(name,null, player.blockPosition());
 			server.execute(() -> {
 				ItemStack stack = player.getItemInHand(hand);
-				long[] positions = new long[0];
-				if(stack.hasTag()) {
-					positions = stack.getTag().getLongArray("locations");
-				}
-				positions = Arrays.copyOf(positions, positions.length + 1);
-				positions[positions.length - 1] = longPos;
-				stack.getOrCreateTag().putLongArray("locations", positions);
+				String dimension = player.level.dimension().location().toString();
+				ListTag listTag = stack.getOrCreateTag().getList(dimension, 10);
+				listTag.add(tempadLocation.toTag());
+				stack.getOrCreateTag().put(dimension, listTag);
 			});
 		});
 	}

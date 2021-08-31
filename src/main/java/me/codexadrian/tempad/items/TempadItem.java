@@ -1,11 +1,11 @@
 package me.codexadrian.tempad.items;
 
-import io.github.cottonmc.cotton.gui.client.CottonClientScreen;
 import me.codexadrian.tempad.Tempad;
+import me.codexadrian.tempad.TempadLocation;
 import me.codexadrian.tempad.client.gui.MainTempadScreenDesc;
+import me.codexadrian.tempad.client.gui.TempadInterfaceGui;
 import me.codexadrian.tempad.entity.TimedoorEntity;
 import net.minecraft.client.Minecraft;
-import net.minecraft.core.BlockPos;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.player.Player;
@@ -30,7 +30,7 @@ public class TempadItem extends Item {
         }
 
         if(level.isClientSide) {
-            Minecraft.getInstance().setScreen(new CottonClientScreen(new MainTempadScreenDesc(color, player, interactionHand)));
+            Minecraft.getInstance().setScreen(new TempadInterfaceGui(new MainTempadScreenDesc(color, player, interactionHand)));
             //Minecraft.getInstance().setScreen(new CottonClientScreen(new TempadGuiDescription(interactionHand, player.getItemInHand(interactionHand))));
         }
 
@@ -38,7 +38,7 @@ public class TempadItem extends Item {
 
     }
 
-    public static void summonTimeDoor(BlockPos pos, Player player/*, ResourceKey<Level> dimension*/) {
+    public static void summonTimeDoor(TempadLocation pos, Player player/*, ResourceKey<Level> dimension*/) {
         TimedoorEntity timedoor = new TimedoorEntity(Tempad.TIMEDOOR_ENTITY_ENTITY_TYPE, player.level);
         var dir = player.getDirection();
         timedoor.setTargetPos(pos);

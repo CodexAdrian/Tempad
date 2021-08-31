@@ -3,5 +3,9 @@
   "gui.tempad.header_line_2": "SELECT PROGRAM",
   "gui.tempad.options": "1. OPTIONS",
   "gui.tempad.run_program": "2. RUN PROGRAM",
-  "gui.tempad.wiki": "3. WIKI"
+  "gui.tempad.wiki": "3. WIKI",
+  "gui.tempad.textfield": "Name:",
+  "gui.tempad.new_location": "(+) New Location",
+  "gui.tempad.create_location": "Add Location",
+  "item.tempad.tempad": "Tempad"
 }

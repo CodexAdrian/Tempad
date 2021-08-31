@@ -1,6 +1,5 @@
 package me.codexadrian.tempad.client.gui;
 
-import io.github.cottonmc.cotton.gui.client.CottonClientScreen;
 import io.github.cottonmc.cotton.gui.client.LightweightGuiDescription;
 import io.github.cottonmc.cotton.gui.widget.WPanel;
 import io.github.cottonmc.cotton.gui.widget.WPlainPanel;
@@ -43,9 +42,7 @@ public class MainTempadScreenDesc extends LightweightGuiDescription {
 
         HighlightedTextButton runProgram = new HighlightedTextButton(new TranslatableComponent("gui.tempad.run_program"), color, blend(Color.getColor("tempad_bg", color), Color.black).getRGB());
         runProgram.setSize(7 * scale, 12);
-        runProgram.setOnClick(() -> {
-            Minecraft.getInstance().setScreen(new CottonClientScreen(new RunProgramScreenDesc(hand, player.getItemInHand(hand),  color)));
-        });
+        runProgram.setOnClick(() -> Minecraft.getInstance().setScreen(new TempadInterfaceGui(new RunProgramScreenDesc(false, null, hand, player,  color))));
         root.add(runProgram, leftAlign, 9 * scale + 3);
 
         HighlightedTextButton wiki = new HighlightedTextButton(new TranslatableComponent("gui.tempad.wiki"), color, blend(Color.getColor("tempad_bg", color), Color.black).getRGB());

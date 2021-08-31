@@ -4,9 +4,9 @@
   "package": "me.codexadrian.tempad.mixin",
   "compatibilityLevel": "JAVA_16",
   "mixins": [
-    "GameRendererMixin"
   ],
   "client": [
+    "GameRendererMixin"
   ],
   "injectors": {
     "defaultRequire": 1

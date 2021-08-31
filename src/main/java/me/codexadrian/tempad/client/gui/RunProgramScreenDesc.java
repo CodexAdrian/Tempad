@@ -1,81 +1,106 @@
 package me.codexadrian.tempad.client.gui;
 
 import io.github.cottonmc.cotton.gui.client.LightweightGuiDescription;
-import io.github.cottonmc.cotton.gui.widget.*;
-import io.github.cottonmc.cotton.gui.widget.icon.ItemIcon;
+import io.github.cottonmc.cotton.gui.widget.WListPanel;
+import io.github.cottonmc.cotton.gui.widget.WPanel;
+import io.github.cottonmc.cotton.gui.widget.WPlainPanel;
+import io.github.cottonmc.cotton.gui.widget.WSprite;
 import io.netty.buffer.Unpooled;
 import me.codexadrian.tempad.Tempad;
-import me.codexadrian.tempad.client.widgets.DynamicButton;
+import me.codexadrian.tempad.TempadLocation;
+import me.codexadrian.tempad.client.widgets.ColorableTextField;
 import me.codexadrian.tempad.client.widgets.HighlightedTextButton;
 import me.codexadrian.tempad.client.widgets.ScalableText;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.minecraft.client.Minecraft;
-import net.minecraft.core.BlockPos;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.TextComponent;
 import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.InteractionHand;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
+import org.jetbrains.annotations.Nullable;
 
 import java.awt.*;
-import java.util.Arrays;
-import java.util.concurrent.atomic.AtomicInteger;
-import java.util.stream.Collectors;
+import java.nio.charset.StandardCharsets;
 
 import static me.codexadrian.tempad.Tempad.*;
 
 public class RunProgramScreenDesc extends LightweightGuiDescription {
     public int color;
-    public RunProgramScreenDesc(InteractionHand hand, ItemStack stack, int color) {
+    boolean locationBuilder;
+    public RunProgramScreenDesc(boolean locationBuilder, @Nullable TempadLocation location, InteractionHand hand, Player player, int color) {
+        ItemStack stack = player.getItemInHand(hand);
+        this.locationBuilder = locationBuilder;
         int scale = 16;
         this.color = color;
         WPlainPanel root = new WPlainPanel();
         setRootPanel(root);
         root.setSize(480, 256);
         this.addPainters();
-        AtomicInteger index = new AtomicInteger();
-        WListPanel<BlockPos, HighlightedTextButton> positionList = new WListPanel<>(Arrays.stream(stack.getOrCreateTag().getLongArray("locations")).mapToObj(BlockPos::of).collect(Collectors.toSet()).stream().toList(), HighlightedTextButton::new, (blockPos, tempadButton) -> {
-            tempadButton.setTextComponent(new TextComponent(blockPos.toString()));
-            tempadButton.setColor(ORANGE,  blend(Color.getColor("tempad_bg", color), Color.black).getRGB());
-            tempadButton.setSize(scale * 10, 12);
-            tempadButton.setOnClick(() -> {
-                FriendlyByteBuf buf = new FriendlyByteBuf(Unpooled.buffer());
-                buf.writeBlockPos(blockPos);
-                buf.writeInt(index.getAndIncrement());
-                Minecraft.getInstance().setScreen(null);
-                ClientPlayNetworking.send(Tempad.TIMEDOOR_PACKET, buf);
+        int darkerColor = blend(Color.getColor("tempad_bg", color), Color.black).getRGB();
+        int evenDarkerColor = blend(Color.getColor("tempad_bg", darkerColor), Color.black).getRGB();
+        if(stack.hasTag()) {
+            WListPanel<TempadLocation, HighlightedTextButton> positionList = new WListPanel<>(TempadLocation.getLocationsFromStack(stack), HighlightedTextButton::new, (tempadLocation, tempadButton) -> {
+                tempadButton.setTextComponent(new TextComponent(tempadLocation.name()));
+                tempadButton.setColor(color, darkerColor);
+                tempadButton.setSize(scale * 10, 12);
+                tempadButton.setVerticalPadding(.5F);
+                tempadButton.setOnClick(() -> {
+                    FriendlyByteBuf buf = new FriendlyByteBuf(Unpooled.buffer());
+                    buf.writeResourceLocation(tempadLocation.key().location());
+                    buf.writeBlockPos(tempadLocation.position());
+                    Minecraft.getInstance().setScreen(null);
+                    ClientPlayNetworking.send(Tempad.TIMEDOOR_PACKET, buf);
+                });
             });
-        });
-        root.add(positionList, 17 * scale, 0, 12 * scale, 12 * scale);
+            root.add(positionList, 17 * scale, 28, 12 * scale, 12 * scale);
+        }
 
-        WTextField nameField = new WTextField(new TextComponent("Name here"));
-        nameField.setEnabledColor(ORANGE);
-        //root.add(nameField, 12, 0, 5, 1);
 
-        WButton timedoor = new WButton(new TranslatableComponent("gui.tempad.timedoorbutton"));
-        timedoor.setOnClick(() -> {
-            FriendlyByteBuf buf = new FriendlyByteBuf(Unpooled.buffer());
-            buf.writeEnum(hand);
-            buf.writeInt(0);
-            Minecraft.getInstance().setScreen(null);
-            ClientPlayNetworking.send(Tempad.TIMEDOOR_PACKET, buf);
-        });
-        //root.add(timedoor, 0, 3, 4, 1);
+        WSprite TimedoorSprite = new WSprite(new ResourceLocation(MODID, "textures/widget/timedoor_sprite.png"));
+        TimedoorSprite.setTint(color);
+        root.add(TimedoorSprite, scale * 4, scale * 2, scale * 9, scale * 9);
 
-        WButton setPosition = new DynamicButton(new TranslatableComponent("gui.tempad.positionbutton"));
+        ColorableTextField nameField = new ColorableTextField(new TranslatableComponent("gui.tempad.textfield"))
+                .setBoxColor(evenDarkerColor)
+                .setBoxFocusColor(color)
+                .setBoxUnfocusedColor(darkerColor)
+                .setEnabledColor(color)
+                .setDisabledColor(darkerColor)
+                .setSuggestionColor(darkerColor);
+        nameField.setMaxLength(10);
 
-        setPosition.setIcon(new ItemIcon(new ItemStack(Items.DIAMOND)));
-        setPosition.setOnClick(() -> {
-            FriendlyByteBuf buf = new FriendlyByteBuf(Unpooled.buffer());
-            buf.writeEnum(hand);
-            ClientPlayNetworking.send(Tempad.LOCATION_PACKET, buf);
-        });
-        //root.add(setPosition, 0, 4, 4, 1);
 
-        ScalableText label = new ScalableText(new TextComponent("Tempad"), ORANGE);
-        label.setSize(2 * scale, 2 * scale);
-        root.add(label, 0, 0);
+        HighlightedTextButton newPosition = new HighlightedTextButton(new TranslatableComponent("gui.tempad.new_location"), color, darkerColor);
+        newPosition.setSize(scale * 3, 12);
+        newPosition.setOnClick(() -> Minecraft.getInstance().setScreen(new TempadInterfaceGui(new RunProgramScreenDesc(!locationBuilder, !locationBuilder ? new TempadLocation(null, null, player.blockPosition()) : null,  hand, player, color))));
+        root.add(newPosition, 17 * scale, 12, 12 * scale, scale);
+
+        if (locationBuilder) {
+            root.add(nameField, (int)(scale * 5.5), scale * 11, scale * 6, scale);
+            HighlightedTextButton addLocation = new HighlightedTextButton(new TranslatableComponent("gui.tempad.create_location"), color, darkerColor);
+            addLocation.setSize(scale * 7, 12);
+            addLocation.setOnClick(() -> {
+                FriendlyByteBuf buf = new FriendlyByteBuf(Unpooled.buffer());
+                String nameFieldText = nameField.getText();
+                buf.writeInt(nameFieldText.length());
+                buf.writeCharSequence(nameFieldText, StandardCharsets.UTF_8);
+                buf.writeEnum(hand);
+                ClientPlayNetworking.send(Tempad.LOCATION_PACKET, buf);
+                //root.remove(addLocation);
+                Minecraft.getInstance().setScreen(new TempadInterfaceGui(new RunProgramScreenDesc(false, null, hand, player, color)));
+            });
+            root.add(addLocation, scale * 5 + 8, scale * 12 + 9);
+        } else {
+            root.validate(this);
+        }
+
+        if(location != null) {
+            ScalableText onScreenLocation = new ScalableText(new TextComponent("(" + location.position().toShortString() + ")"), color);
+            root.add(onScreenLocation, scale * 5, scale, scale * 7, scale);
+        }
 
         root.validate(this);
     }

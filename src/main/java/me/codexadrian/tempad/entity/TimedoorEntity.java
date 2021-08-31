@@ -1,10 +1,10 @@
 package me.codexadrian.tempad.entity;
 
 import me.codexadrian.tempad.Tempad;
-import net.minecraft.core.BlockPos;
+import me.codexadrian.tempad.TempadLocation;
+import net.fabricmc.fabric.api.dimension.v1.FabricDimensions;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.NbtUtils;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientboundAddEntityPacket;
 import net.minecraft.network.syncher.EntityDataAccessor;
@@ -17,6 +17,7 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.portal.PortalInfo;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.Nullable;
@@ -29,7 +30,7 @@ import static me.codexadrian.tempad.Tempad.ORANGE;
 public class TimedoorEntity extends Entity {
     public static final int ANIMATION_LENGTH = 8;
     private static final EntityDataAccessor<Integer> CLOSING_TIME = SynchedEntityData.defineId(TimedoorEntity.class, EntityDataSerializers.INT);
-    private BlockPos targetPos = null;
+    private TempadLocation targetPos = null;
     private UUID owner = null;
     private UUID linkedPortalId = null;
     private TimedoorEntity linkedPortalEntity = null;
@@ -48,7 +49,7 @@ public class TimedoorEntity extends Entity {
     protected void readAdditionalSaveData(CompoundTag compoundTag) {
         if (compoundTag.contains("location")) {
             var pos = compoundTag.getCompound("location");
-            this.setTargetPos(NbtUtils.readBlockPos(pos));
+            this.setTargetPos(TempadLocation.fromTag(pos));
         }
         this.setClosingTime(compoundTag.getInt("closing_time"));
         this.setOwner(compoundTag.getUUID("owner"));
@@ -61,7 +62,7 @@ public class TimedoorEntity extends Entity {
     @Override
     protected void addAdditionalSaveData(CompoundTag compoundTag) {
         if (getTargetPos() != null) {
-            compoundTag.put("location", NbtUtils.writeBlockPos(getTargetPos()));
+            compoundTag.put("location", getTargetPos().toTag());
         }
         compoundTag.putInt("closing_time", getClosingTime());
         compoundTag.putUUID("owner", getOwner());
@@ -88,50 +89,56 @@ public class TimedoorEntity extends Entity {
         if (getTargetPos() != null) {
             List<Entity> entities = this.level.getEntitiesOfClass(Entity.class, box, entity -> entity instanceof LivingEntity || entity instanceof ItemEntity);
             if (!entities.isEmpty() && !level.isClientSide()) {
+                ServerLevel destinationLevel = getTargetPos().getLevel(this.level);
                 for (Entity entity : entities) {
-                    entity.level = this.level;
                     Vec3 deltaMovement = entity.getDeltaMovement();
-                    var pos = getTargetPos();
-                    entity.teleportToWithTicket(pos.getX(), pos.getY(), pos.getZ());
-                    entity.setDeltaMovement(deltaMovement);
-                    entity.hasImpulse = true;
-                    if(getLinkedPortalEntity() != null) getLinkedPortalEntity().resetClosingTime();
+                    var pos = getTargetPos().position();
+                    if(destinationLevel != null ) {
+                        if (!targetPos.key().location().equals(this.level.dimension().location())) {
+                            FabricDimensions.teleport(entity, destinationLevel, new PortalInfo(new Vec3(pos.getX(), pos.getY(), pos.getZ()), deltaMovement, entity.getYRot(), entity.getXRot()));
+                        } else {
+                            entity.teleportToWithTicket(pos.getX(), pos.getY(), pos.getZ());
+                            entity.setDeltaMovement(deltaMovement);
+                            entity.hasImpulse = !!!false;
+                        }
+                    }
+                    if (getLinkedPortalEntity() != null) getLinkedPortalEntity().resetClosingTime();
                     this.resetClosingTime();
-
                     if (entity instanceof Player player) {
                         if (player.getUUID().equals(getOwner())) {
                             this.setClosingTime(this.tickCount + 60);
-                            if(getLinkedPortalEntity() != null) this.getLinkedPortalEntity().setClosingTime(getLinkedPortalEntity().tickCount + 40);
+                            if (getLinkedPortalEntity() != null)
+                                this.getLinkedPortalEntity().setClosingTime(getLinkedPortalEntity().tickCount + 40);
                         }
                     }
                 }
-                if(getLinkedPortalEntity() == null) {
-                    TimedoorEntity recipientPortal = new TimedoorEntity(Tempad.TIMEDOOR_ENTITY_ENTITY_TYPE, this.level);
+                if (getLinkedPortalEntity() == null) {
+                    TimedoorEntity recipientPortal = new TimedoorEntity(Tempad.TIMEDOOR_ENTITY_ENTITY_TYPE, destinationLevel);
                     recipientPortal.setOwner(entities.get(0).getUUID());
                     recipientPortal.setClosingTime(50);
                     recipientPortal.setTargetPos(null);
                     this.setLinkedPortalId(recipientPortal.getUUID());
                     recipientPortal.setLinkedPortalId(this.getUUID());
-                    var position = getTargetPos().relative(this.getDirection(), 1);
+                    var position = getTargetPos().position().relative(this.getDirection(), 1);
                     recipientPortal.setPos(position.getX(), position.getY(), position.getZ());
                     recipientPortal.setYRot(this.getYRot());
-                    level.addFreshEntity(recipientPortal);
+                    this.level.addFreshEntity(recipientPortal);
                 }
             }
         }
         if (this.tickCount > getClosingTime() + ANIMATION_LENGTH && getClosingTime() != -1) {
-            if(this.getLinkedPortalEntity() != null) this.getLinkedPortalEntity().setLinkedPortalId(null);
+            if (this.getLinkedPortalEntity() != null) this.getLinkedPortalEntity().setLinkedPortalId(null);
             this.setLinkedPortalId(null);
             this.discard();
         }
     }
 
-    public void setTargetPos(BlockPos pos) {
+    public void setTargetPos(TempadLocation pos) {
         this.targetPos = pos;
     }
 
     @Nullable
-    public BlockPos getTargetPos() {
+    public TempadLocation getTargetPos() {
         return targetPos;
     }
 
@@ -177,7 +184,7 @@ public class TimedoorEntity extends Entity {
     }
 
     public void resetClosingTime() {
-        if(getClosingTime() != -1) {
+        if (getClosingTime() != -1) {
             this.setClosingTime(this.tickCount + 100);
         }
     }

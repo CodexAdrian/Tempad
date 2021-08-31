@@ -2,7 +2,6 @@
   "schemaVersion": 1,
   "id": "tempad",
   "version": "${version}",
-
   "name": "Tempad",
   "description": "Create a portal to anywhere from anywhere!",
   "authors": [
@@ -12,11 +11,10 @@
     "homepage": "https://fabricmc.net/",
     "sources": "https://github.com/FabricMC/fabric-example-mod"
   },
-
   "license": "CC0-1.0",
-  "icon": "assets/modid/icon.png",
-
+  "icon": "assets/tempad/icon.png",
   "environment": "*",
+  "accessWidener": "tempad.accesswidener",
   "entrypoints": {
     "main": [
       "me.codexadrian.tempad.Tempad"
@@ -28,7 +26,6 @@
   "mixins": [
     "tempad.mixins.json"
   ],
-
   "depends": {
     "fabricloader": ">=0.11.3",
     "fabric": "*",

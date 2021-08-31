@@ -22,6 +22,7 @@ public class HighlightedTextButton extends WWidget {
     private Runnable onClick;
 
     protected HorizontalAlignment alignment = HorizontalAlignment.LEFT;
+    private float padding;
 
     public HighlightedTextButton() {
     }
@@ -35,8 +36,10 @@ public class HighlightedTextButton extends WWidget {
     @Override
     public void paint(PoseStack matrices, int x, int y, int mouseX, int mouseY) {
         matrices.pushPose();
-        matrices.translate(x * (1- this.getHeight() * 2/ 16F), y * (1 - this.getHeight() * 2/ 16F), 0);
-        matrices.scale(this.getHeight() * 2 / 16F, this.getHeight() * 2 / 16F, 0);
+        float height = this.getPaddedHeight() - padding;
+        matrices.translate(x * (1- height * 2 / 16F), y * (1 - height * 2 / 16F), 0);
+        matrices.scale(height * 2 / 16F, height * 2 / 16F, 0);
+        matrices.translate(0, padding/2F, 0);
         int color = isWithinBounds(mouseX, mouseY) ? colorOn : colorOff;
         ScreenDrawing.drawStringWithShadow(matrices, textComponent.getVisualOrderText(), alignment, x, y, this.getWidth(), color);
         matrices.popPose();
@@ -81,7 +84,11 @@ public class HighlightedTextButton extends WWidget {
 
     @Override
     public int getHeight() {
-        return height;
+        return height + (int) Math.ceil(padding);
+    }
+
+    public float getPaddedHeight() {
+        return height + padding;
     }
 
     public void setOnClick(@Nullable Runnable onClick) {
@@ -91,5 +98,9 @@ public class HighlightedTextButton extends WWidget {
     @Override
     public boolean isWithinBounds(int x, int y) {
         return x>=0 && y>=0 && x<this.width && y<this.height;
+    }
+
+    public void setVerticalPadding(float padding) {
+        this.padding = padding;
     }
 }
