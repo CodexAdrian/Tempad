@@ -29,20 +29,15 @@ public class GameRendererMixin {
 
     @Inject(method = "reloadShaders", at = @At("TAIL"))
     private void reloadShaders(ResourceManager resourceManager, CallbackInfo ci) {
-        List<Pair<ShaderInstance, Consumer<ShaderInstance>>> list = new ArrayList<>();
+        ShaderInstance shader;
         try {
-            list.add(Pair.of(new ShaderInstance(resourceManager, "rendertype_timedoor", DefaultVertexFormat.POSITION_COLOR_TEX_LIGHTMAP), (shaderInstance) -> TempadClient.timedoorShader = shaderInstance));
-            list.add(Pair.of(new ShaderInstance(resourceManager, "rendertype_blurtimedoor", DefaultVertexFormat.POSITION_COLOR_TEX_LIGHTMAP), (shaderInstance) -> TempadClient.blurShader = shaderInstance));
+            shader = new ShaderInstance(resourceManager, "rendertype_timedoor", DefaultVertexFormat.POSITION_COLOR_TEX_LIGHTMAP);
         } catch (Exception e) {
-            list.forEach(pair -> pair.getFirst().close());
-            throw new RuntimeException("could not reload shaders", e);
+            throw new RuntimeException("could not reload Tempad shader", e);
         }
 
-        list.forEach(pair -> {
-            ShaderInstance shaderInstance = pair.getFirst();
-            this.shaders.put(shaderInstance.getName(), shaderInstance);
-            pair.getSecond().accept(shaderInstance);
-        });
+        this.shaders.put(shader.getName(), shader);
+        TempadClient.timedoorShader = shader;
     }
 
     @Inject(method = "resize", at = @At("TAIL"))
