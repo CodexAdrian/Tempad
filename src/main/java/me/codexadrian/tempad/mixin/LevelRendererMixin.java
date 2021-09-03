@@ -2,7 +2,7 @@ package me.codexadrian.tempad.mixin;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Matrix4f;
-import me.codexadrian.tempad.client.render.TimedoorBlurRenderer;
+import me.codexadrian.tempad.client.render.TimeDoorBlurRenderer;
 import net.minecraft.client.Camera;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.LevelRenderer;
@@ -17,6 +17,6 @@ public class LevelRendererMixin {
 
     @Inject(method = "renderLevel", at = @At("TAIL"))
     public void renderBlur(PoseStack poseStack, float deltaTime, long l, boolean bl, Camera camera, GameRenderer gameRenderer, LightTexture lightTexture, Matrix4f matrix4f, CallbackInfo ci) {
-        TimedoorBlurRenderer.renderBlur(deltaTime, poseStack, camera, gameRenderer);
+        TimeDoorBlurRenderer.renderBlur(deltaTime, poseStack, camera, matrix4f);
     }
 }

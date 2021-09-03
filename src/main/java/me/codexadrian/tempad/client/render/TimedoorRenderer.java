@@ -22,7 +22,6 @@ public class TimedoorRenderer extends EntityRenderer<TimedoorEntity> {
 
     @Override
     public void render(TimedoorEntity entity, float yaw, float deltaTime, PoseStack poseStack, MultiBufferSource multiBufferSource, int light) {
-        //if(!whichTime) return;
         float width = 1.4F;
         float height = 2.3F;
         float depth = .4F;
