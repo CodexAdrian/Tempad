@@ -46,6 +46,7 @@ public class TempadItem extends Item {
         var position = player.blockPosition().relative(dir, 3);
         timedoor.setPos(position.getX(), position.getY(), position.getZ());
         timedoor.setYRot(dir.getOpposite().toYRot());
+        timedoor.setClosingTime(-1);
         player.level.addFreshEntity(timedoor);
     }
 }

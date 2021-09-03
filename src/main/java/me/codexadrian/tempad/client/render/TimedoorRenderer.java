@@ -14,6 +14,7 @@ import net.minecraft.util.Mth;
 import java.awt.*;
 
 public class TimedoorRenderer extends EntityRenderer<TimedoorEntity> {
+    public static boolean whichTime;
 
     public TimedoorRenderer(EntityRendererProvider.Context context) {
         super(context);
@@ -21,6 +22,7 @@ public class TimedoorRenderer extends EntityRenderer<TimedoorEntity> {
 
     @Override
     public void render(TimedoorEntity entity, float yaw, float deltaTime, PoseStack poseStack, MultiBufferSource multiBufferSource, int light) {
+        //if(!whichTime) return;
         float width = 1.4F;
         float height = 2.3F;
         float depth = .4F;
@@ -72,7 +74,7 @@ public class TimedoorRenderer extends EntityRenderer<TimedoorEntity> {
         float xBound = width * 0.5F;
         float yBound = height * 0.5F;
         float zBound = -(depth * 0.5F);
-        var buffer = multiBufferSource.getBuffer(TempadClient.TIMEDOOR_LAYER);
+        var buffer = multiBufferSource.getBuffer(whichTime ? TempadClient.BLUR : TempadClient.TIMEDOOR_LAYER);
         //Front
         float red = color.getRed()/255F;
         float green = color.getGreen()/255F;
@@ -113,48 +115,4 @@ public class TimedoorRenderer extends EntityRenderer<TimedoorEntity> {
         buffer.vertex(model, xBound, -yBound, zBound).color(red, green, blue, alpha).uv(1,1).uv2(i).endVertex();
         buffer.vertex(model, xBound, yBound, zBound).color(red, green, blue, alpha).uv(1,0).uv2(i).endVertex();
     }
-/*
-    public void animateClosing(long time) {
-        int phaseLength = (animationLengthInMilli)/2;
-        long animationTime = (Util.getMillis() - time);
-        float phase1 = 1 - 1F/phaseLength * animationTime;
-        float phase2 = 1 - 1F/phaseLength * (animationTime - phaseLength);
-
-        if(animationTime <= phaseLength) {
-            this.height = height * phase1;
-            //width = width * widthPhase1;
-        }
-
-        if (animationTime > phaseLength && animationTime < animationLengthInMilli) {
-            this.width = width * phase2;
-            //depth = depth * phase2;
-            this.height = .16F;
-        }
-    }
-
-
-    public void animateOpening(long time) {
-        int phaseLength = (animationLengthInMilli)/2;
-        long animationTime = (Util.getMillis() - time);
-        float phase1 = 1F/phaseLength * animationTime;
-        float phase2 = 1F/phaseLength * (animationTime - phaseLength*1.2F);
-
-        if (animationTime <= phaseLength) {
-            this.width = width * phase1;
-            //depth = depth * phase2;
-            this.height = .2F;
-        }
-
-        if(animationTime > phaseLength && animationTime < animationLengthInMilli) {
-            this.height = .2F + height * phase2;
-            //width = width * widthPhase1;
-        }
-
-        if(animationTime > animationLengthInMilli) {
-            this.width = 1.4F;
-            this.height = 2.3F;
-            this.depth = .4F;
-        }
-
-    }*/
 }
