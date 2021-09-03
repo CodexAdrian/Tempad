@@ -19,7 +19,7 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.inventory.InventoryMenu;
 import net.minecraft.world.phys.Vec3;
 
-public class TimeDoorBlurRenderer {
+public class TimedoorBlurRenderer {
 
     public static void renderBlur(float deltaTime, PoseStack poseStack, Camera camera, Matrix4f matrix) {
         Minecraft minecraft = Minecraft.getInstance();
