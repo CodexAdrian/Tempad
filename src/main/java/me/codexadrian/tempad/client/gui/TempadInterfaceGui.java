@@ -4,8 +4,10 @@ import io.github.cottonmc.cotton.gui.GuiDescription;
 import io.github.cottonmc.cotton.gui.client.CottonClientScreen;
 
 public class TempadInterfaceGui extends CottonClientScreen {
-    public TempadInterfaceGui(GuiDescription guiDescription) {
+    TempadGUIDescription tempadGUIDescription;
+    public TempadInterfaceGui(TempadGUIDescription guiDescription) {
         super(guiDescription);
+        this.tempadGUIDescription = guiDescription;
     }
 
     @Override

@@ -27,14 +27,14 @@ import java.nio.charset.StandardCharsets;
 
 import static me.codexadrian.tempad.Tempad.*;
 
-public class RunProgramScreenDesc extends LightweightGuiDescription {
-    public int color;
+public class RunProgramScreenDesc extends TempadGUIDescription {
     boolean locationBuilder;
+
     public RunProgramScreenDesc(boolean locationBuilder, @Nullable TempadLocation location, InteractionHand hand, Player player, int color) {
+        super(color);
         ItemStack stack = player.getItemInHand(hand);
         this.locationBuilder = locationBuilder;
         int scale = 16;
-        this.color = color;
         WPlainPanel root = new WPlainPanel();
         setRootPanel(root);
         root.setSize(480, 256);
@@ -83,18 +83,21 @@ public class RunProgramScreenDesc extends LightweightGuiDescription {
             HighlightedTextButton addLocation = new HighlightedTextButton(new TranslatableComponent("gui.tempad.create_location"), color, darkerColor);
             addLocation.setSize(scale * 7, 12);
             addLocation.setOnClick(() -> {
-                FriendlyByteBuf buf = new FriendlyByteBuf(Unpooled.buffer());
                 String nameFieldText = nameField.getText();
-                buf.writeInt(nameFieldText.length());
-                buf.writeCharSequence(nameFieldText, StandardCharsets.UTF_8);
-                buf.writeEnum(hand);
-                ClientPlayNetworking.send(Tempad.LOCATION_PACKET, buf);
+                if(nameFieldText != null) {
+                    FriendlyByteBuf buf = new FriendlyByteBuf(Unpooled.buffer());
+                    buf.writeInt(nameFieldText.length());
+                    buf.writeCharSequence(nameFieldText, StandardCharsets.UTF_8);
+                    buf.writeEnum(hand);
+                    ClientPlayNetworking.send(Tempad.LOCATION_PACKET, buf);
+                }
+
                 //root.remove(addLocation);
                 Minecraft.getInstance().setScreen(new TempadInterfaceGui(new RunProgramScreenDesc(false, null, hand, player, color)));
             });
             root.add(addLocation, scale * 5 + 8, scale * 12 + 9);
         } else {
-            root.validate(this);
+
         }
 
         if(location != null) {

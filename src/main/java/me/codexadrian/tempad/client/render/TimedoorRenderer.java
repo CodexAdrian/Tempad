@@ -5,6 +5,7 @@ import com.mojang.math.Matrix4f;
 import com.mojang.math.Vector3f;
 import me.codexadrian.tempad.TempadClient;
 import me.codexadrian.tempad.entity.TimedoorEntity;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
@@ -14,7 +15,6 @@ import net.minecraft.util.Mth;
 import java.awt.*;
 
 public class TimedoorRenderer extends EntityRenderer<TimedoorEntity> {
-    public static boolean whichTime;
 
     public TimedoorRenderer(EntityRendererProvider.Context context) {
         super(context);
@@ -73,7 +73,7 @@ public class TimedoorRenderer extends EntityRenderer<TimedoorEntity> {
         float xBound = width * 0.5F;
         float yBound = height * 0.5F;
         float zBound = -(depth * 0.5F);
-        var buffer = multiBufferSource.getBuffer(whichTime ? TempadClient.BLUR : TempadClient.TIMEDOOR_LAYER);
+        var buffer = multiBufferSource.getBuffer(BetterTextureStateShard.somethingToGetTheRenderTypePerInteger(Minecraft.getInstance().getMainRenderTarget().getColorTextureId()));
         //Front
         float red = color.getRed()/255F;
         float green = color.getGreen()/255F;

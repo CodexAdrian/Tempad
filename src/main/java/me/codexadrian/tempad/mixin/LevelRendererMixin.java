@@ -17,6 +17,6 @@ public class LevelRendererMixin {
 
     @Inject(method = "renderLevel", at = @At("TAIL"))
     public void renderBlur(PoseStack poseStack, float deltaTime, long l, boolean bl, Camera camera, GameRenderer gameRenderer, LightTexture lightTexture, Matrix4f matrix4f, CallbackInfo ci) {
-        TimedoorBlurRenderer.renderBlur(deltaTime, poseStack, camera, matrix4f);
+        TimedoorBlurRenderer.renderBlur(deltaTime, poseStack, camera);
     }
 }
