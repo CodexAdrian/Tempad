@@ -2,26 +2,28 @@ package me.codexadrian.tempad.client.render;
 
 import com.mojang.blaze3d.pipeline.RenderTarget;
 import com.mojang.blaze3d.platform.GlStateManager;
-import com.mojang.blaze3d.platform.Window;
 import com.mojang.blaze3d.shaders.AbstractUniform;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.math.Matrix4f;
 import com.mojang.math.Vector3f;
+import me.codexadrian.tempad.BlurReloader;
 import me.codexadrian.tempad.TempadClient;
 import me.codexadrian.tempad.entity.TimedoorEntity;
+import me.codexadrian.tempad.PostChainAccessor;
 import net.minecraft.client.Camera;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.Sheets;
-import net.minecraft.client.renderer.texture.TextureAtlas;
+import net.minecraft.client.renderer.PostPass;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.inventory.InventoryMenu;
 import net.minecraft.world.phys.Vec3;
-import org.lwjgl.system.CallbackI;
+import org.lwjgl.glfw.GLFW;
+import org.lwjgl.opengl.GL11;
+import org.lwjgl.opengl.GL30;
+
+import java.util.Comparator;
+import java.util.List;
+import java.util.stream.StreamSupport;
 
 public class TimedoorBlurRenderer {
 
@@ -29,12 +31,17 @@ public class TimedoorBlurRenderer {
         Minecraft minecraft = Minecraft.getInstance();
         RenderTarget renderTexture = minecraft.getMainRenderTarget();
         RenderTarget blurRenderTarget = TempadClient.BLUR_RENDER_TARGET;
+        //blurRenderTarget.clear(false);
+        clear(blurRenderTarget);
         blurRenderTarget.copyDepthFrom(renderTexture);
+        renderTexture.bindWrite(false);
 
         Vec3 position = camera.getPosition();
         double cameraX = position.x();
         double cameraY = position.y();
         double cameraZ = position.z();
+
+
 
         AbstractUniform inSize = TempadClient.timedoorShader.safeGetUniform("InSize");
         AbstractUniform viewMatUniform = TempadClient.timedoorShader.safeGetUniform("ViewMat");
@@ -43,23 +50,46 @@ public class TimedoorBlurRenderer {
         viewMat.mulPose(Vector3f.YP.rotationDegrees(camera.getYRot() + 180.0F));
 
         viewMatUniform.set(viewMat.last().pose());
-        inSize.set((float)renderTexture.width, (float)renderTexture.height);
+        inSize.set((float) renderTexture.width, (float) renderTexture.height);
 
-
-        
-
+        //renderTexture.unbindRead();
         assert minecraft.level != null;
         MultiBufferSource.BufferSource bufferSource = minecraft.renderBuffers().bufferSource();
-        for (Entity entity : minecraft.level.entitiesForRendering()) {
-            if (entity instanceof TimedoorEntity) {
-                double entityX = Mth.lerp(deltaTime, entity.xOld, entity.getX());
-                double entityY = Mth.lerp(deltaTime, entity.yOld, entity.getY());
-                double entityZ = Mth.lerp(deltaTime, entity.zOld, entity.getZ());
-                float entityYaw = Mth.lerp(deltaTime, entity.yRotO, entity.getYRot());
+        StreamSupport.stream(minecraft.level.entitiesForRendering().spliterator(), false).filter(TimedoorEntity.class::isInstance).sorted(Comparator.comparingDouble(value -> -value.distanceToSqr(minecraft.cameraEntity))).forEach(entity -> {
+            double entityX = Mth.lerp(deltaTime, entity.xOld, entity.getX());
+            double entityY = Mth.lerp(deltaTime, entity.yOld, entity.getY());
+            double entityZ = Mth.lerp(deltaTime, entity.zOld, entity.getZ());
+            float entityYaw = Mth.lerp(deltaTime, entity.yRotO, entity.getYRot());
 
-                minecraft.getEntityRenderDispatcher().render(entity, entityX - cameraX, entityY - cameraY, entityZ - cameraZ, entityYaw, deltaTime, poseStack, bufferSource, minecraft.getEntityRenderDispatcher().getPackedLightCoords(entity, deltaTime));
-                bufferSource.endLastBatch();
-            }
+            blurRenderTarget.bindWrite(false);
+            minecraft.getEntityRenderDispatcher().render(entity, entityX - cameraX, entityY - cameraY, entityZ - cameraZ, entityYaw, deltaTime, poseStack, bufferSource, minecraft.getEntityRenderDispatcher().getPackedLightCoords(entity, deltaTime));
+            bufferSource.endLastBatch();
+            renderTexture.bindWrite(false);
+        });
+/*
+        GlStateManager._glBindFramebuffer(GL30.GL_READ_FRAMEBUFFER, blurRenderTarget.frameBufferId);
+        GlStateManager._glBindFramebuffer(GL30.GL_DRAW_FRAMEBUFFER, renderTexture.frameBufferId);
+        GlStateManager._glBlitFrameBuffer(0, 0, renderTexture.width, renderTexture.height, 0, 0, renderTexture.width/4, renderTexture.height/4, GL11.GL_COLOR_BUFFER_BIT, GL11.GL_NEAREST);
+*/
+
+        List<PostPass> passes = ((PostChainAccessor) BlurReloader.timedoorBlur).getPasses();
+        for (PostPass pass : passes) {
+            pass.getEffect().setSampler("TimedoorSampler", blurRenderTarget::getColorTextureId);
         }
+
+        BlurReloader.timedoorBlur.process(deltaTime);
+        renderTexture.bindWrite(false);
+    }
+
+    public static void bindAll(RenderTarget renderTarget) {
+        GlStateManager._glBindFramebuffer(GL30.GL_FRAMEBUFFER, renderTarget.frameBufferId);
+    }
+
+
+    public static void clear(RenderTarget renderTarget) {
+        bindAll(renderTarget);
+        GlStateManager._clear(GL11.GL_COLOR_BUFFER_BIT, false);
+        GlStateManager._clearColor(0,0,0,0);
+        GlStateManager._glBindFramebuffer(GL30.GL_FRAMEBUFFER, 0);
     }
 }

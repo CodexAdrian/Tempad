@@ -5,6 +5,8 @@ import me.codexadrian.tempad.TempadLocation;
 import me.codexadrian.tempad.client.gui.MainTempadScreenDesc;
 import me.codexadrian.tempad.client.gui.TempadInterfaceGui;
 import me.codexadrian.tempad.entity.TimedoorEntity;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.minecraft.client.Minecraft;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
@@ -24,21 +26,12 @@ public class TempadItem extends Item {
     @Override
     public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand interactionHand) {
         ItemStack stack = player.getItemInHand(interactionHand);
-        int color = ORANGE;
-        if(stack.hasTag()) {
-            color = stack.getTag().contains("color") ? stack.getTag().getInt("color") : ORANGE;
-        }
-
-        if(level.isClientSide) {
-            Minecraft.getInstance().setScreen(new TempadInterfaceGui(new MainTempadScreenDesc(color, player, interactionHand)));
-            //Minecraft.getInstance().setScreen(new CottonClientScreen(new TempadGuiDescription(interactionHand, player.getItemInHand(interactionHand))));
-        }
-
-        return super.use(level, player, interactionHand);
+        if (level.isClientSide) openScreen(player, stack, interactionHand);
+        return InteractionResultHolder.success(stack);
 
     }
 
-    public static void summonTimeDoor(TempadLocation pos, Player player/*, ResourceKey<Level> dimension*/) {
+    public static void summonTimeDoor(TempadLocation pos, Player player) {
         TimedoorEntity timedoor = new TimedoorEntity(Tempad.TIMEDOOR_ENTITY_ENTITY_TYPE, player.level);
         var dir = player.getDirection();
         timedoor.setTargetPos(pos);
@@ -48,5 +41,15 @@ public class TempadItem extends Item {
         timedoor.setYRot(dir.getOpposite().toYRot());
         timedoor.setClosingTime(-1);
         player.level.addFreshEntity(timedoor);
+    }
+
+    @Environment(EnvType.CLIENT)
+    private void openScreen(Player player, ItemStack stack, InteractionHand interactionHand) {
+        int color = ORANGE;
+        if (stack.hasTag()) {
+            color = stack.getTag().contains("color") ? stack.getTag().getInt("color") : ORANGE;
+        }
+        Minecraft.getInstance().setScreen(new TempadInterfaceGui(new MainTempadScreenDesc(color, player, interactionHand)));
+        //Minecraft.getInstance().setScreen(new CottonClientScreen(new TempadGuiDescription(interactionHand, player.getItemInHand(interactionHand))));
     }
 }

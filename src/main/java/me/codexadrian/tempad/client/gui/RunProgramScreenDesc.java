@@ -91,9 +91,9 @@ public class RunProgramScreenDesc extends TempadGUIDescription {
                     buf.writeEnum(hand);
                     ClientPlayNetworking.send(Tempad.LOCATION_PACKET, buf);
                 }
-
+                Minecraft.getInstance().setScreen(null);
                 //root.remove(addLocation);
-                Minecraft.getInstance().setScreen(new TempadInterfaceGui(new RunProgramScreenDesc(false, null, hand, player, color)));
+                //Minecraft.getInstance().setScreen(new TempadInterfaceGui(new RunProgramScreenDesc(false, null, hand, player, color)));
             });
             root.add(addLocation, scale * 5 + 8, scale * 12 + 9);
         } else {

@@ -3,6 +3,7 @@ package me.codexadrian.tempad.mixin;
 import com.mojang.blaze3d.pipeline.TextureTarget;
 import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import com.mojang.datafixers.util.Pair;
+import me.codexadrian.tempad.BlurReloader;
 import me.codexadrian.tempad.TempadClient;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GameRenderer;
@@ -35,6 +36,7 @@ public class GameRendererMixin {
             timedoorShader = new ShaderInstance(resourceManager, "rendertype_timedoor", DefaultVertexFormat.POSITION_COLOR_TEX_LIGHTMAP);
             colorWheelShader = new ShaderInstance(resourceManager, "rendertype_colorwheel", DefaultVertexFormat.POSITION);
             colorTriangleShader = new ShaderInstance(resourceManager, "rendertype_colortriangle", DefaultVertexFormat.POSITION);
+            timedoorWhiteShader = new ShaderInstance(resourceManager, "rendertype_timedoor_white", DefaultVertexFormat.POSITION_COLOR_TEX_LIGHTMAP);
         } catch (Exception e) {
             if (timedoorShader != null) {
                 timedoorShader.close();
@@ -46,16 +48,23 @@ public class GameRendererMixin {
                 colorWheelShader = null;
             }
 
+            if(colorTriangleShader != null) {
+                colorTriangleShader.close();
+                colorTriangleShader = null;
+            }
+
             throw new RuntimeException("could not reload Tempad shaders", e);
         }
 
         this.shaders.put(timedoorShader.getName(), timedoorShader);
         this.shaders.put(colorWheelShader.getName(), colorWheelShader);
         this.shaders.put(colorTriangleShader.getName(), colorTriangleShader);
+        this.shaders.put(timedoorWhiteShader.getName(), timedoorWhiteShader);
     }
 
     @Inject(method = "resize", at = @At("TAIL"))
     public void pain(int i, int j, CallbackInfo ci) {
         TempadClient.BLUR_RENDER_TARGET = new TextureTarget(i, j, true, Minecraft.ON_OSX);
+        if(BlurReloader.timedoorBlur != null) BlurReloader.timedoorBlur.resize(i, j);
     }
 }

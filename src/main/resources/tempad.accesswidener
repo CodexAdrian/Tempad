@@ -2,6 +2,7 @@ accessWidener v1 named
 
 accessible class net/minecraft/client/renderer/RenderType$CompositeState
 accessible class net/minecraft/client/renderer/RenderStateShard$TextureStateShard
+accessible class net/minecraft/client/renderer/RenderStateShard$CullStateShard
 accessible class net/minecraft/client/renderer/RenderStateShard$TexturingStateShard
 accessible class net/minecraft/client/renderer/RenderStateShard$TransparencyStateShard
 accessible class net/minecraft/client/renderer/RenderStateShard$ShaderStateShard

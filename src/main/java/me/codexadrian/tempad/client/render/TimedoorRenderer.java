@@ -7,12 +7,15 @@ import me.codexadrian.tempad.TempadClient;
 import me.codexadrian.tempad.entity.TimedoorEntity;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.culling.Frustum;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 
 import java.awt.*;
+
 
 public class TimedoorRenderer extends EntityRenderer<TimedoorEntity> {
 
@@ -71,9 +74,9 @@ public class TimedoorRenderer extends EntityRenderer<TimedoorEntity> {
 
     public void makeBoxBasedOnPlayerBecauseAshSaidSo(Matrix4f model, MultiBufferSource multiBufferSource, float width, float height, float depth, int i, Color color) {
         float xBound = width * 0.5F;
-        float yBound = height * 0.5F;
+        float yBound = height * 0.5F - .01F;
         float zBound = -(depth * 0.5F);
-        var buffer = multiBufferSource.getBuffer(BetterTextureStateShard.somethingToGetTheRenderTypePerInteger(Minecraft.getInstance().getMainRenderTarget().getColorTextureId()));
+        var buffer = multiBufferSource.getBuffer(TempadClient.timedoorBlurRenderType);
         //Front
         float red = color.getRed()/255F;
         float green = color.getGreen()/255F;
@@ -113,5 +116,10 @@ public class TimedoorRenderer extends EntityRenderer<TimedoorEntity> {
         buffer.vertex(model, xBound, -yBound, -zBound).color(red, green, blue, alpha).uv(0,1).uv2(i).endVertex();
         buffer.vertex(model, xBound, -yBound, zBound).color(red, green, blue, alpha).uv(1,1).uv2(i).endVertex();
         buffer.vertex(model, xBound, yBound, zBound).color(red, green, blue, alpha).uv(1,0).uv2(i).endVertex();
+    }
+
+    @Override
+    public boolean shouldRender(TimedoorEntity entity, Frustum frustum, double d, double e, double f) {
+        return false;
     }
 }

@@ -5,7 +5,7 @@
     "dstrgb": "1"
   },
   "vertex": "rendertype_timedoor",
-  "fragment": "rendertype_timedoor",
+  "fragment": "rendertype_timedoor_white",
   "attributes": [
     "Position",
     "Color",
