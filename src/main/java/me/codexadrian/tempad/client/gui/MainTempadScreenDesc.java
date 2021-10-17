@@ -37,7 +37,7 @@ public class MainTempadScreenDesc extends TempadGUIDescription {
 
         HighlightedTextButton options = new HighlightedTextButton(new TranslatableComponent("gui.tempad.options"), color, blend(Color.getColor("tempad_bg", color), Color.black).getRGB());
         options.setSize(5 * scale, 12);
-        options.setOnClick(() -> Minecraft.getInstance().setScreen(new TempadInterfaceGui(new OptionsScreenDesc(color)) {
+        options.setOnClick(() -> Minecraft.getInstance().setScreen(new TempadInterfaceGui(new ColorSelectScreenDesc(color)) {
             @Override
             public void onClose() {
                 Minecraft.getInstance().setScreen(new TempadInterfaceGui(new MainTempadScreenDesc(tempadGUIDescription.color, player, hand)));
@@ -64,10 +64,5 @@ public class MainTempadScreenDesc extends TempadGUIDescription {
         root.add(TVAlogo, scale/2, scale * 4, scale * 16, scale * 8);
 
         root.validate(this);
-    }
-    @Override
-    public void addPainters() {
-        WPanel root = getRootPanel();
-        drawUnifiedBackground(root, color);
     }
 }

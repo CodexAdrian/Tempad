@@ -108,9 +108,5 @@ public class RunProgramScreenDesc extends TempadGUIDescription {
         root.validate(this);
     }
 
-    @Override
-    public void addPainters() {
-        WPanel root = getRootPanel();
-        drawUnifiedBackground(root, color);
-    }
+
 }

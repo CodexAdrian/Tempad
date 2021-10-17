@@ -34,8 +34,8 @@ public class GameRendererMixin {
     private void reloadShaders(ResourceManager resourceManager, CallbackInfo ci) {
         try {
             timedoorShader = new ShaderInstance(resourceManager, "rendertype_timedoor", DefaultVertexFormat.POSITION_COLOR_TEX_LIGHTMAP);
-            colorWheelShader = new ShaderInstance(resourceManager, "rendertype_colorwheel", DefaultVertexFormat.POSITION);
-            colorTriangleShader = new ShaderInstance(resourceManager, "rendertype_colortriangle", DefaultVertexFormat.POSITION);
+            colorWheelShader = new ShaderInstance(resourceManager, "rendertype_colorwheel", DefaultVertexFormat.POSITION_TEX);
+            colorTriangleShader = new ShaderInstance(resourceManager, "rendertype_colortriangle", DefaultVertexFormat.POSITION_TEX_COLOR);
             timedoorWhiteShader = new ShaderInstance(resourceManager, "rendertype_timedoor_white", DefaultVertexFormat.POSITION_COLOR_TEX_LIGHTMAP);
         } catch (Exception e) {
             if (timedoorShader != null) {

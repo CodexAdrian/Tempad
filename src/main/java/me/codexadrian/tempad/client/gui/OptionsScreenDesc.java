@@ -9,12 +9,14 @@ import io.github.cottonmc.cotton.gui.widget.WPlainPanel;
 import io.github.cottonmc.cotton.gui.widget.WSlider;
 import io.github.cottonmc.cotton.gui.widget.WWidget;
 import io.github.cottonmc.cotton.gui.widget.data.Axis;
-import io.github.cottonmc.cotton.gui.widget.data.Color;
 import me.codexadrian.tempad.TempadClient;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.renderer.MultiBufferSource;
 
+import java.awt.*;
+
+import static me.codexadrian.tempad.Tempad.ORANGE;
 import static me.codexadrian.tempad.Tempad.drawUnifiedBackground;
 
 public class OptionsScreenDesc extends TempadGUIDescription {
@@ -61,22 +63,18 @@ public class OptionsScreenDesc extends TempadGUIDescription {
         });
 
         ColorWheel wheel = new ColorWheel();
-        root.add(wheel, scale * 10, scale, scale * 3, scale * 3);
-        wheel.setDimensions(scale * 3, scale * 3);
+        wheel.setDimensions(scale * 12);
+        root.add(wheel, scale * 9, 0);
 
         updateCol(col);
         addPainters();
     }
     private void updateCol(WColorBox col) {
-        Color.HSL hsl = new Color.HSL(hue /100f, saturation /100f, lum /100f);
+        io.github.cottonmc.cotton.gui.widget.data.Color.HSL hsl = new io.github.cottonmc.cotton.gui.widget.data.Color.HSL(hue /100f, saturation /100f, lum /100f);
         col.setColor(hsl.toRgb());
         this.color = hsl.toRgb();
     }
 
-    public void addPainters() {
-        WPanel root = getRootPanel();
-        drawUnifiedBackground(root, this.color);
-    }
 
     public static class WColorBox extends WWidget {
         protected int boxColor = 0xFF_FFFFFF;
@@ -93,30 +91,42 @@ public class OptionsScreenDesc extends TempadGUIDescription {
     }
 
     public static class ColorWheel extends WWidget {
+        int triangleColor = ORANGE;
         int width, height;
         @Override
         public void paint(PoseStack matrices, int x, int y, int mouseX, int mouseY) {
+            int red = triangleColor >> 16 & 0xFF;
+            int green = triangleColor >> 8 & 0xFF;
+            int blue = triangleColor & 0xFF;
             matrices.pushPose();
             MultiBufferSource.BufferSource bufferSource = Minecraft.getInstance().renderBuffers().bufferSource();
             VertexConsumer buffer1 = bufferSource.getBuffer(TempadClient.colorWheelRendertype);
-            matrices.scale(getWidth(), getHeight(), 1);
-            matrices.translate(x, y, -1);
+            matrices.translate(x, y, 0);
             Matrix4f model = matrices.last().pose();
-            buffer1.vertex(model, 1, 1, 0).endVertex();
-            buffer1.vertex(model, 0, 1, 0).endVertex();
-            buffer1.vertex(model, 0, 0, 0).endVertex();
-            buffer1.vertex(model, 1, 0, 0).endVertex();
-            VertexConsumer buffer2 = bufferSource.getBuffer(TempadClient.colorTriangleRendertype);
-            buffer2.vertex(model, 0.5F, 1, 0).endVertex();
-            buffer2.vertex(model, 0, 0, 0).endVertex();
-            buffer2.vertex(model, 0, 1, 0).endVertex();
-            matrices.popPose();
+            buffer1.vertex(model, width, 0, 0).uv(1, 0).endVertex();
+            buffer1.vertex(model, 0, 0, 0).uv(0, 0).endVertex();
+            buffer1.vertex(model, 0, height, 0).uv(0, 1).endVertex();
+            buffer1.vertex(model, width, height, 0).uv(1, 1).endVertex();
             bufferSource.endLastBatch();
+            matrices.popPose();
+            matrices.pushPose();
+            matrices.translate(x + width * .25, y + height * .1925, 0);
+            Matrix4f model2 = matrices.last().pose();
+            VertexConsumer buffer2 = bufferSource.getBuffer(TempadClient.colorTriangleRendertype);
+            buffer2.vertex(model2,width * .5F, height * .5F, 0).uv(1, 0).color(red, green, blue, 1).endVertex();
+            buffer2.vertex(model2, width * .25F, 0,0).uv(0.5F, 1).color(red, green, blue, 1).endVertex();
+            buffer2.vertex(model2,0, height * .5F, 0).uv(0, 0).color(red, green, blue, 1).endVertex();
+            bufferSource.endLastBatch();
+            matrices.popPose();
         }
 
-        public void setDimensions(int width, int height) {
-            this.width = width;
-            this.height = height;
+        public void setDimensions(int size) {
+            this.width = size;
+            this.height = size;
+        }
+
+        public void setTriangleColor(int triangleColor) {
+            this.triangleColor = triangleColor;
         }
 
         @Override

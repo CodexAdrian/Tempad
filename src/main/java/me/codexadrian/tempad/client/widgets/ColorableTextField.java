@@ -23,7 +23,8 @@ import org.lwjgl.glfw.GLFW;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 
-public class ColorableTextField extends WTextField {public static final int OFFSET_X_TEXT = 4;
+public class ColorableTextField extends WTextField {
+    public static final int OFFSET_X_TEXT = 4;
     //public static final int OFFSET_Y_TEXT = 6;
 
     @Environment(EnvType.CLIENT)

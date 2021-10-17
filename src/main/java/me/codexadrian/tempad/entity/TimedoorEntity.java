@@ -14,6 +14,8 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.decoration.HangingEntity;
+import net.minecraft.world.entity.item.FallingBlockEntity;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
@@ -87,7 +89,7 @@ public class TimedoorEntity extends Entity {
             box = box.inflate(0, 0, 0.5);
         }
         if (getTargetPos() != null) {
-            List<Entity> entities = this.level.getEntitiesOfClass(Entity.class, box, entity -> entity instanceof LivingEntity || entity instanceof ItemEntity);
+            List<Entity> entities = this.level.getEntitiesOfClass(Entity.class, box, entity -> !(entity instanceof TimedoorEntity) && entity.canChangeDimensions() && !(entity instanceof FallingBlockEntity) && !(entity instanceof HangingEntity));
             if (!entities.isEmpty() && !level.isClientSide()) {
                 ServerLevel destinationLevel = getTargetPos().getLevel(this.level);
                 for (Entity entity : entities) {
@@ -100,6 +102,7 @@ public class TimedoorEntity extends Entity {
                             entity.teleportToWithTicket(pos.getX(), pos.getY(), pos.getZ());
                             entity.setDeltaMovement(deltaMovement);
                             entity.hasImpulse = !!!false;
+                            //good code i promise
                         }
                     }
                     if (getLinkedPortalEntity() != null) getLinkedPortalEntity().resetClosingTime();

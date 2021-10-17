@@ -8,12 +8,14 @@ import me.codexadrian.tempad.entity.TimedoorEntity;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.Minecraft;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.storage.PlayerDataStorage;
 
 import static me.codexadrian.tempad.Tempad.ORANGE;
 
@@ -39,16 +41,13 @@ public class TempadItem extends Item {
         var position = player.blockPosition().relative(dir, 3);
         timedoor.setPos(position.getX(), position.getY(), position.getZ());
         timedoor.setYRot(dir.getOpposite().toYRot());
-        timedoor.setClosingTime(-1);
+        //timedoor.setClosingTime(-1);
         player.level.addFreshEntity(timedoor);
     }
 
     @Environment(EnvType.CLIENT)
     private void openScreen(Player player, ItemStack stack, InteractionHand interactionHand) {
         int color = ORANGE;
-        if (stack.hasTag()) {
-            color = stack.getTag().contains("color") ? stack.getTag().getInt("color") : ORANGE;
-        }
         Minecraft.getInstance().setScreen(new TempadInterfaceGui(new MainTempadScreenDesc(color, player, interactionHand)));
         //Minecraft.getInstance().setScreen(new CottonClientScreen(new TempadGuiDescription(interactionHand, player.getItemInHand(interactionHand))));
     }

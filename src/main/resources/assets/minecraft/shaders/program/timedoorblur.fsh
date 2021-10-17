@@ -1,6 +1,6 @@
 #version 150
 
-#define blur 5
+#define blur 4
 uniform sampler2D DiffuseSampler, TimedoorSampler;
 
 in vec2 texCoord;
@@ -18,8 +18,8 @@ void main() {
         vec4 sum = vec4(0);
         vec2 textureCoord;
 
-        float horizontalStep = 1;//Set to 0 for no horizontal blue
-        float verticalStep = 1;//Set 0 for no vertical blue
+        float horizontalStep = 1;//Set to 0 for no horizontal blur
+        float verticalStep = 1;//Set 0 for no vertical blur
 
         sum += texture(DiffuseSampler, vec2(refractedCoord.x - 4.0 * blur * oneTexel.x, refractedCoord.y - 4.0 * blur * oneTexel.y)) * 0.0162162162;
         sum += texture(DiffuseSampler, vec2(refractedCoord.x - 3.0 * blur * oneTexel.x, refractedCoord.y - 3.0 * blur * oneTexel.y)) * 0.0540540541;
