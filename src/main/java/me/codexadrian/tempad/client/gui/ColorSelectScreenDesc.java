@@ -7,15 +7,18 @@ import io.netty.buffer.Unpooled;
 import me.codexadrian.tempad.Tempad;
 import me.codexadrian.tempad.client.widgets.ColorButton;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
+import net.minecraft.client.Minecraft;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.entity.player.Player;
 
 import static me.codexadrian.tempad.Tempad.colors;
 import static me.codexadrian.tempad.Tempad.drawUnifiedBackground;
 
 public class ColorSelectScreenDesc extends TempadGUIDescription {
     public int color;
-    public ColorSelectScreenDesc(int passedColor) {
-        super(passedColor);
+    public ColorSelectScreenDesc(int passedColor, Player player, InteractionHand hand) {
+        super(passedColor, player, hand);
         int scale = 16;
         WPlainPanel root = new WPlainPanel();
         setRootPanel(root);
@@ -38,6 +41,9 @@ public class ColorSelectScreenDesc extends TempadGUIDescription {
             button.setOnClick(() -> {
                 FriendlyByteBuf buf = new FriendlyByteBuf(Unpooled.buffer());
                 buf.writeInt(colors[finalI]);
+                this.color = colors[finalI];
+                //Minecraft.getInstance().setScreen(null);
+                Minecraft.getInstance().setScreen(new TempadInterfaceGui(new ColorSelectScreenDesc(color, player, hand)));
                 ClientPlayNetworking.send(Tempad.SET_COLOR_PACKET, buf);
             });
             root.add(button, startX + x, startY + y);
@@ -57,4 +63,6 @@ public class ColorSelectScreenDesc extends TempadGUIDescription {
         WPanel root = getRootPanel();
         drawUnifiedBackground(root, 0xFF_FFFFFF, false);
     }
+
+
 }

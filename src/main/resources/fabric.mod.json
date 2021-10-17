@@ -5,7 +5,7 @@
   "name": "Tempad",
   "description": "Create a portal to anywhere from anywhere!",
   "authors": [
-    "Me!"
+    "CodexAdrian"
   ],
   "contact": {
     "homepage": "https://fabricmc.net/",
@@ -21,11 +21,19 @@
     ],
     "client": [
       "me.codexadrian.tempad.TempadClient"
+    ],
+    "cardinal-components-entity": [
+      "me.codexadrian.tempad.tempad.TempadComponents"
     ]
   },
   "mixins": [
     "tempad.mixins.json"
   ],
+  "custom": {
+    "cardinal-components": [
+      "tempad:tempad_color_data"
+    ]
+  },
   "depends": {
     "fabricloader": ">=0.11.3",
     "fabric": "*",

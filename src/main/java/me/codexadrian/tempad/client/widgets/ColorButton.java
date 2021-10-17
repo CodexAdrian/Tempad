@@ -31,7 +31,7 @@ public class ColorButton extends WWidget {
     public InputResult onClick(int x, int y, int button) {
         super.onClick(x, y, button);
 
-        if (isWithinBounds(x, y)) {
+        if (x>=0 && y>=0 && x<this.width && y<this.height) {
             Minecraft.getInstance().getSoundManager().play(SimpleSoundInstance.forUI(SoundEvents.UI_BUTTON_CLICK, 1.0F));
 
             if (onClick!=null) onClick.run();

@@ -1,4 +1,4 @@
-package me.codexadrian.tempad.items;
+package me.codexadrian.tempad.tempad;
 
 import net.fabricmc.fabric.api.util.NbtType;
 import net.minecraft.nbt.CompoundTag;

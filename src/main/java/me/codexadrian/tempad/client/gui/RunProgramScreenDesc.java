@@ -31,7 +31,7 @@ public class RunProgramScreenDesc extends TempadGUIDescription {
     boolean locationBuilder;
 
     public RunProgramScreenDesc(boolean locationBuilder, @Nullable TempadLocation location, InteractionHand hand, Player player, int color) {
-        super(color);
+        super(color, player, hand);
         ItemStack stack = player.getItemInHand(hand);
         this.locationBuilder = locationBuilder;
         int scale = 16;
@@ -77,7 +77,6 @@ public class RunProgramScreenDesc extends TempadGUIDescription {
         newPosition.setSize(scale * 3, 12);
         newPosition.setOnClick(() -> Minecraft.getInstance().setScreen(new TempadInterfaceGui(new RunProgramScreenDesc(!locationBuilder, !locationBuilder ? new TempadLocation(null, null, player.blockPosition()) : null,  hand, player, color))));
         root.add(newPosition, 17 * scale, 12, 12 * scale, scale);
-
         if (locationBuilder) {
             root.add(nameField, (int)(scale * 5.5), scale * 11, scale * 6, scale);
             HighlightedTextButton addLocation = new HighlightedTextButton(new TranslatableComponent("gui.tempad.create_location"), color, darkerColor);

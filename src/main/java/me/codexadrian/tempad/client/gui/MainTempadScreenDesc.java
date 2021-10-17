@@ -18,7 +18,7 @@ import static me.codexadrian.tempad.Tempad.*;
 
 public class MainTempadScreenDesc extends TempadGUIDescription {
     public MainTempadScreenDesc(int color, Player player, InteractionHand hand) {
-        super(color);
+        super(color, player, hand);
         int scale = 16;
         WPlainPanel root = new WPlainPanel();
         this.setRootPanel(root);
@@ -37,22 +37,12 @@ public class MainTempadScreenDesc extends TempadGUIDescription {
 
         HighlightedTextButton options = new HighlightedTextButton(new TranslatableComponent("gui.tempad.options"), color, blend(Color.getColor("tempad_bg", color), Color.black).getRGB());
         options.setSize(5 * scale, 12);
-        options.setOnClick(() -> Minecraft.getInstance().setScreen(new TempadInterfaceGui(new ColorSelectScreenDesc(color)) {
-            @Override
-            public void onClose() {
-                Minecraft.getInstance().setScreen(new TempadInterfaceGui(new MainTempadScreenDesc(tempadGUIDescription.color, player, hand)));
-            }
-        }));
+        options.setOnClick(() -> Minecraft.getInstance().setScreen(new TempadInterfaceGui(new ColorSelectScreenDesc(color, player, hand))));
         root.add(options, leftAlign, 8 * scale + 3);
 
         HighlightedTextButton runProgram = new HighlightedTextButton(new TranslatableComponent("gui.tempad.run_program"), color, blend(Color.getColor("tempad_bg", color), Color.black).getRGB());
         runProgram.setSize(7 * scale, 12);
-        runProgram.setOnClick(() -> Minecraft.getInstance().setScreen(new TempadInterfaceGui(new RunProgramScreenDesc(false, null, hand, player,  color)){
-            @Override
-            public void onClose() {
-                Minecraft.getInstance().setScreen(new TempadInterfaceGui(new MainTempadScreenDesc(tempadGUIDescription.color, player, hand)));
-            }
-        }));
+        runProgram.setOnClick(() -> Minecraft.getInstance().setScreen(new TempadInterfaceGui(new RunProgramScreenDesc(false, null, hand, player,  color))));
         root.add(runProgram, leftAlign, 9 * scale + 3);
 
         HighlightedTextButton wiki = new HighlightedTextButton(new TranslatableComponent("gui.tempad.wiki"), color, blend(Color.getColor("tempad_bg", color), Color.black).getRGB());

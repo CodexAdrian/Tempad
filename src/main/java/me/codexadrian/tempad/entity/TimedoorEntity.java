@@ -32,11 +32,11 @@ import static me.codexadrian.tempad.Tempad.ORANGE;
 public class TimedoorEntity extends Entity {
     public static final int ANIMATION_LENGTH = 8;
     private static final EntityDataAccessor<Integer> CLOSING_TIME = SynchedEntityData.defineId(TimedoorEntity.class, EntityDataSerializers.INT);
+    private static final EntityDataAccessor<Integer> COLOR = SynchedEntityData.defineId(TimedoorEntity.class, EntityDataSerializers.INT);
     private TempadLocation targetPos = null;
     private UUID owner = null;
     private UUID linkedPortalId = null;
     private TimedoorEntity linkedPortalEntity = null;
-    private int color = ORANGE;
 
     public TimedoorEntity(EntityType<TimedoorEntity> entityType, Level level) {
         super(entityType, level);
@@ -45,6 +45,7 @@ public class TimedoorEntity extends Entity {
     @Override
     protected void defineSynchedData() {
         entityData.define(CLOSING_TIME, 100);
+        entityData.define(COLOR, ORANGE);
     }
 
     @Override
@@ -55,7 +56,7 @@ public class TimedoorEntity extends Entity {
         }
         this.setClosingTime(compoundTag.getInt("closing_time"));
         this.setOwner(compoundTag.getUUID("owner"));
-        this.setColor(compoundTag.getInt("color"));
+        this.setColor(compoundTag.getInt("outline_color"));
         if (compoundTag.contains("linked_portal")) {
             this.setLinkedPortalId(compoundTag.getUUID("linked_portal"));
         }
@@ -68,7 +69,7 @@ public class TimedoorEntity extends Entity {
         }
         compoundTag.putInt("closing_time", getClosingTime());
         compoundTag.putUUID("owner", getOwner());
-        compoundTag.putInt("color", getColor());
+        compoundTag.putInt("outline_color", getColor());
         if (getLinkedPortalId() != null) {
             compoundTag.putUUID("linked_portal", getLinkedPortalId());
         }
@@ -117,9 +118,10 @@ public class TimedoorEntity extends Entity {
                 }
                 if (getLinkedPortalEntity() == null) {
                     TimedoorEntity recipientPortal = new TimedoorEntity(Tempad.TIMEDOOR_ENTITY_ENTITY_TYPE, destinationLevel);
-                    recipientPortal.setOwner(entities.get(0).getUUID());
+                    recipientPortal.setOwner(this.getOwner());
                     recipientPortal.setClosingTime(50);
                     recipientPortal.setTargetPos(null);
+                    recipientPortal.setColor(this.getColor());
                     this.setLinkedPortalId(recipientPortal.getUUID());
                     recipientPortal.setLinkedPortalId(this.getUUID());
                     var position = getTargetPos().position().relative(this.getDirection(), 1);
@@ -179,11 +181,11 @@ public class TimedoorEntity extends Entity {
     }
 
     public void setColor(int color) {
-        this.color = color;
+        entityData.set(COLOR, color);
     }
 
     public int getColor() {
-        return this.color;
+        return entityData.get(COLOR);
     }
 
     public void resetClosingTime() {

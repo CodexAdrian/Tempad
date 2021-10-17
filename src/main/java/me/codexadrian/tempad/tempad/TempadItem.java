@@ -1,5 +1,6 @@
-package me.codexadrian.tempad.items;
+package me.codexadrian.tempad.tempad;
 
+import io.github.cottonmc.cotton.gui.client.CottonClientScreen;
 import me.codexadrian.tempad.Tempad;
 import me.codexadrian.tempad.TempadLocation;
 import me.codexadrian.tempad.client.gui.MainTempadScreenDesc;
@@ -8,16 +9,12 @@ import me.codexadrian.tempad.entity.TimedoorEntity;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.Minecraft;
-import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.storage.PlayerDataStorage;
-
-import static me.codexadrian.tempad.Tempad.ORANGE;
 
 public class TempadItem extends Item {
 
@@ -36,6 +33,7 @@ public class TempadItem extends Item {
     public static void summonTimeDoor(TempadLocation pos, Player player) {
         TimedoorEntity timedoor = new TimedoorEntity(Tempad.TIMEDOOR_ENTITY_ENTITY_TYPE, player.level);
         var dir = player.getDirection();
+        timedoor.setColor(ColorDataComponent.COLOR_DATA.get(player).getColor());
         timedoor.setTargetPos(pos);
         timedoor.setOwner(player.getUUID());
         var position = player.blockPosition().relative(dir, 3);
@@ -47,8 +45,13 @@ public class TempadItem extends Item {
 
     @Environment(EnvType.CLIENT)
     private void openScreen(Player player, ItemStack stack, InteractionHand interactionHand) {
-        int color = ORANGE;
-        Minecraft.getInstance().setScreen(new TempadInterfaceGui(new MainTempadScreenDesc(color, player, interactionHand)));
+        int color = ColorDataComponent.COLOR_DATA.get(player).getColor();
+        Minecraft.getInstance().setScreen(new CottonClientScreen(new MainTempadScreenDesc(color, player, interactionHand)){
+            @Override
+            public boolean isPauseScreen() {
+                return false;
+            }
+        });
         //Minecraft.getInstance().setScreen(new CottonClientScreen(new TempadGuiDescription(interactionHand, player.getItemInHand(interactionHand))));
     }
 }
