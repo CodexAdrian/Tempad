@@ -1,7 +1,7 @@
 package me.codexadrian.tempad.entity;
 
 import me.codexadrian.tempad.Tempad;
-import me.codexadrian.tempad.TempadLocation;
+import me.codexadrian.tempad.tempad.LocationData;
 import net.fabricmc.fabric.api.dimension.v1.FabricDimensions;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -13,10 +13,8 @@ import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.decoration.HangingEntity;
 import net.minecraft.world.entity.item.FallingBlockEntity;
-import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.portal.PortalInfo;
@@ -25,6 +23,7 @@ import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
 
 import static me.codexadrian.tempad.Tempad.ORANGE;
@@ -33,7 +32,7 @@ public class TimedoorEntity extends Entity {
     public static final int ANIMATION_LENGTH = 8;
     private static final EntityDataAccessor<Integer> CLOSING_TIME = SynchedEntityData.defineId(TimedoorEntity.class, EntityDataSerializers.INT);
     private static final EntityDataAccessor<Integer> COLOR = SynchedEntityData.defineId(TimedoorEntity.class, EntityDataSerializers.INT);
-    private TempadLocation targetPos = null;
+    private LocationData locationData = null;
     private UUID owner = null;
     private UUID linkedPortalId = null;
     private TimedoorEntity linkedPortalEntity = null;
@@ -50,10 +49,7 @@ public class TimedoorEntity extends Entity {
 
     @Override
     protected void readAdditionalSaveData(CompoundTag compoundTag) {
-        if (compoundTag.contains("location")) {
-            var pos = compoundTag.getCompound("location");
-            this.setTargetPos(TempadLocation.fromTag(pos));
-        }
+        this.setLocation(LocationData.fromTag(compoundTag.getCompound("location")));
         this.setClosingTime(compoundTag.getInt("closing_time"));
         this.setOwner(compoundTag.getUUID("owner"));
         this.setColor(compoundTag.getInt("outline_color"));
@@ -64,9 +60,7 @@ public class TimedoorEntity extends Entity {
 
     @Override
     protected void addAdditionalSaveData(CompoundTag compoundTag) {
-        if (getTargetPos() != null) {
-            compoundTag.put("location", getTargetPos().toTag());
-        }
+        compoundTag.put("location", locationData.toTag());
         compoundTag.putInt("closing_time", getClosingTime());
         compoundTag.putUUID("owner", getOwner());
         compoundTag.putInt("outline_color", getColor());
@@ -89,15 +83,15 @@ public class TimedoorEntity extends Entity {
         if (getDirection() == Direction.EAST || getDirection() == Direction.WEST) {
             box = box.inflate(0, 0, 0.5);
         }
-        if (getTargetPos() != null) {
+        if (getLocation() != null) {
             List<Entity> entities = this.level.getEntitiesOfClass(Entity.class, box, entity -> !(entity instanceof TimedoorEntity) && entity.canChangeDimensions() && !(entity instanceof FallingBlockEntity) && !(entity instanceof HangingEntity));
             if (!entities.isEmpty() && !level.isClientSide()) {
-                ServerLevel destinationLevel = getTargetPos().getLevel(this.level);
+                ServerLevel destinationLevel = Objects.requireNonNull(level.getServer()).getLevel(getLocation().getLevelKey());
                 for (Entity entity : entities) {
                     Vec3 deltaMovement = entity.getDeltaMovement();
-                    var pos = getTargetPos().position();
+                    var pos = getLocation().getBlockPos();
                     if(destinationLevel != null ) {
-                        if (!targetPos.key().location().equals(this.level.dimension().location())) {
+                        if (!getLocation().getLevelKey().location().equals(this.level.dimension().location())) {
                             FabricDimensions.teleport(entity, destinationLevel, new PortalInfo(new Vec3(pos.getX(), pos.getY(), pos.getZ()), deltaMovement, entity.getYRot(), entity.getXRot()));
                         } else {
                             entity.teleportToWithTicket(pos.getX(), pos.getY(), pos.getZ());
@@ -120,11 +114,11 @@ public class TimedoorEntity extends Entity {
                     TimedoorEntity recipientPortal = new TimedoorEntity(Tempad.TIMEDOOR_ENTITY_ENTITY_TYPE, destinationLevel);
                     recipientPortal.setOwner(this.getOwner());
                     recipientPortal.setClosingTime(50);
-                    recipientPortal.setTargetPos(null);
+                    recipientPortal.setLocation(null);
                     recipientPortal.setColor(this.getColor());
                     this.setLinkedPortalId(recipientPortal.getUUID());
                     recipientPortal.setLinkedPortalId(this.getUUID());
-                    var position = getTargetPos().position().relative(this.getDirection(), 1);
+                    var position = getLocation().getBlockPos().relative(this.getDirection(), 1);
                     recipientPortal.setPos(position.getX(), position.getY(), position.getZ());
                     recipientPortal.setYRot(this.getYRot());
                     this.level.addFreshEntity(recipientPortal);
@@ -138,13 +132,13 @@ public class TimedoorEntity extends Entity {
         }
     }
 
-    public void setTargetPos(TempadLocation pos) {
-        this.targetPos = pos;
+    public void setLocation(LocationData location) {
+        this.locationData = location;
     }
 
     @Nullable
-    public TempadLocation getTargetPos() {
-        return targetPos;
+    public LocationData getLocation() {
+        return locationData;
     }
 
     public int getClosingTime() {

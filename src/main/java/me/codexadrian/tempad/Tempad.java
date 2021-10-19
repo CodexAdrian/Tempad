@@ -4,6 +4,8 @@ import io.github.cottonmc.cotton.gui.client.ScreenDrawing;
 import io.github.cottonmc.cotton.gui.widget.WPanel;
 import me.codexadrian.tempad.entity.TimedoorEntity;
 import me.codexadrian.tempad.tempad.ColorDataComponent;
+import me.codexadrian.tempad.tempad.LocationData;
+import me.codexadrian.tempad.tempad.TempadComponent;
 import me.codexadrian.tempad.tempad.TempadItem;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
@@ -20,12 +22,14 @@ import net.minecraft.world.entity.MobCategory;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.awt.*;
 import java.nio.charset.StandardCharsets;
+import java.util.UUID;
 
 public class Tempad implements ModInitializer {
     public static final int ORANGE = 0xFF_ff6f00;
@@ -36,6 +40,7 @@ public class Tempad implements ModInitializer {
     public static final ResourceLocation TIMEDOOR_PACKET = new ResourceLocation(MODID, "timedoor");
     public static final ResourceLocation LOCATION_PACKET = new ResourceLocation(MODID, "location");
     public static final ResourceLocation SET_COLOR_PACKET = new ResourceLocation(MODID, "color");
+    public static final ResourceLocation DELETE_LOCATION_PACKET = new ResourceLocation(MODID, "delete_location");
     public static final int[] colors = {
             0xFF_FFFFFF,
             0xFF_F51302,
@@ -84,21 +89,31 @@ public class Tempad implements ModInitializer {
         ServerPlayNetworking.registerGlobalReceiver(TIMEDOOR_PACKET, (server, player, handler, buf, responseSender) -> {
             ResourceKey<Level> resourceKey = ResourceKey.create(Registry.DIMENSION_REGISTRY, buf.readResourceLocation());
             BlockPos target = buf.readBlockPos();
-            server.execute(() -> TempadItem.summonTimeDoor(new TempadLocation(null, resourceKey, target), player));
+            server.execute(() -> TempadItem.summonTimeDoor(new LocationData("", resourceKey, target), player));
         });
 
         ServerPlayNetworking.registerGlobalReceiver(LOCATION_PACKET, (server, player, handler, buf, responseSender) -> {
             int index = buf.readInt();
             String name = (String) buf.readCharSequence(index, StandardCharsets.UTF_8);
             InteractionHand hand = buf.readEnum(InteractionHand.class);
-            var tempadLocation = new TempadLocation(name, null, player.blockPosition());
             server.execute(() -> {
-                ItemStack stack = player.getItemInHand(hand);
+            /*    ItemStack stack = player.getItemInHand(hand);
                 String dimension = player.level.dimension().location().toString();
                 ListTag listTag = stack.getOrCreateTag().getList(dimension, 10);
                 listTag.add(tempadLocation.toTag());
-                stack.getOrCreateTag().put(dimension, listTag);
+                stack.getOrCreateTag().put(dimension, listTag);*/
+                ItemStack stack = player.getItemInHand(hand);
+                var tempadLocation = new LocationData(name, player.level.dimension(), player.blockPosition());
+
+                TempadComponent.addStackLocation(stack, tempadLocation);
             });
+        });
+
+        ServerPlayNetworking.registerGlobalReceiver(DELETE_LOCATION_PACKET, (server, player, handler, buf, responseSender) -> {
+            InteractionHand hand = buf.readEnum(InteractionHand.class);
+            UUID locationId = buf.readUUID();
+            ItemStack stack = player.getItemInHand(hand);
+            server.execute(() -> TempadComponent.deleteStackLocation(stack, locationId));
         });
     }
 

@@ -1,3 +1,4 @@
+/*
 package me.codexadrian.tempad;
 
 import net.minecraft.core.BlockPos;
@@ -30,6 +31,7 @@ public record TempadLocation(@Nullable String name, @Nullable ResourceKey<Level>
             result.ifPresent(value -> tag.put("dimension", value));
         }
         tag.put("dimPosition", NbtUtils.writeBlockPos(position()));
+        tag.putString("id", this.toString());
         return tag;
     }
 
@@ -57,7 +59,7 @@ public record TempadLocation(@Nullable String name, @Nullable ResourceKey<Level>
 
     public static List<TempadLocation> getLocationsFromStack(ItemStack stack) {
         var keys = stack.getTag().getAllKeys();
-        return keys.stream().filter(string -> !string.equals("color")).map(key -> {
+        return keys.stream().map(key -> {
             List<TempadLocation> returnVal = new ArrayList<>();
             var tags = stack.getTag().getList(key, 10);
             for(int i = 0; i < tags.size(); i++) {
@@ -69,3 +71,4 @@ public record TempadLocation(@Nullable String name, @Nullable ResourceKey<Level>
         }).flatMap(Collection::stream).collect(Collectors.toList());
     }
 }
+*/

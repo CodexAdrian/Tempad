@@ -2,9 +2,7 @@ package me.codexadrian.tempad.tempad;
 
 import io.github.cottonmc.cotton.gui.client.CottonClientScreen;
 import me.codexadrian.tempad.Tempad;
-import me.codexadrian.tempad.TempadLocation;
 import me.codexadrian.tempad.client.gui.MainTempadScreenDesc;
-import me.codexadrian.tempad.client.gui.TempadInterfaceGui;
 import me.codexadrian.tempad.entity.TimedoorEntity;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -27,14 +25,13 @@ public class TempadItem extends Item {
         ItemStack stack = player.getItemInHand(interactionHand);
         if (level.isClientSide) openScreen(player, stack, interactionHand);
         return InteractionResultHolder.success(stack);
-
     }
 
-    public static void summonTimeDoor(TempadLocation pos, Player player) {
+    public static void summonTimeDoor(LocationData locationData, Player player) {
         TimedoorEntity timedoor = new TimedoorEntity(Tempad.TIMEDOOR_ENTITY_ENTITY_TYPE, player.level);
         var dir = player.getDirection();
         timedoor.setColor(ColorDataComponent.COLOR_DATA.get(player).getColor());
-        timedoor.setTargetPos(pos);
+        timedoor.setLocation(locationData);
         timedoor.setOwner(player.getUUID());
         var position = player.blockPosition().relative(dir, 3);
         timedoor.setPos(position.getX(), position.getY(), position.getZ());
