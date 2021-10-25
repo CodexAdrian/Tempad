@@ -2,6 +2,8 @@ package me.codexadrian.tempad.tempad;
 
 import io.github.cottonmc.cotton.gui.client.CottonClientScreen;
 import me.codexadrian.tempad.Tempad;
+import me.codexadrian.tempad.client.api.gui.ColorSelectScreen;
+import me.codexadrian.tempad.client.api.gui.TeleportingScreen;
 import me.codexadrian.tempad.client.gui.MainTempadScreenDesc;
 import me.codexadrian.tempad.entity.TimedoorEntity;
 import net.fabricmc.api.EnvType;
@@ -23,7 +25,7 @@ public class TempadItem extends Item {
     @Override
     public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand interactionHand) {
         ItemStack stack = player.getItemInHand(interactionHand);
-        if (level.isClientSide) openScreen(player, stack, interactionHand);
+        if (level.isClientSide) openScreen(player, interactionHand);
         return InteractionResultHolder.success(stack);
     }
 
@@ -41,14 +43,9 @@ public class TempadItem extends Item {
     }
 
     @Environment(EnvType.CLIENT)
-    private void openScreen(Player player, ItemStack stack, InteractionHand interactionHand) {
+    private void openScreen(Player player, InteractionHand interactionHand) {
         int color = ColorDataComponent.COLOR_DATA.get(player).getColor();
-        Minecraft.getInstance().setScreen(new CottonClientScreen(new MainTempadScreenDesc(color, player, interactionHand)){
-            @Override
-            public boolean isPauseScreen() {
-                return false;
-            }
-        });
-        //Minecraft.getInstance().setScreen(new CottonClientScreen(new TempadGuiDescription(interactionHand, player.getItemInHand(interactionHand))));
+        Minecraft.getInstance().setScreen(new TeleportingScreen(color, player, interactionHand));
+        //Minecraft.getInstance().setScreen(new CottonClientScreen(new MainTempadScreenDesc(color, player, interactionHand)));
     }
 }

@@ -19,6 +19,11 @@ repositories {
 		maven {
 			url = "https://ladysnake.jfrog.io/artifactory/mods"
 		}
+		mavenLocal()
+		maven {
+			name 'Gegy'
+			url 'https://maven.gegy.dev'
+		}
 	}
 }
 
@@ -35,7 +40,7 @@ dependencies {
 	modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
 
 	modImplementation include("io.github.cottonmc:LibGui:4.1.6+1.17.1")
-
+	modImplementation include("dev.lambdaurora:spruceui:${project.spruceui_version}")
 	modImplementation include("io.github.onyxstudios.Cardinal-Components-API:cardinal-components-base:${project.cca_version}")
 	modImplementation include("io.github.onyxstudios.Cardinal-Components-API:cardinal-components-entity:${project.cca_version}")
 	modImplementation include("io.github.onyxstudios.Cardinal-Components-API:cardinal-components-util:${project.cca_version}")

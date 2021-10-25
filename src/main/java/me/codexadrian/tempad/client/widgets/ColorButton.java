@@ -20,8 +20,6 @@ public class ColorButton extends WWidget {
     @Nullable
     private Runnable onClick;
 
-    protected HorizontalAlignment alignment = HorizontalAlignment.LEFT;
-
     public ColorButton(int color) {
         this.buttonColor = color;
     }

@@ -1,5 +1,9 @@
 package me.codexadrian.tempad;
 
+import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.vertex.*;
+import com.mojang.math.Matrix4f;
+import dev.lambdaurora.spruceui.util.ScissorManager;
 import io.github.cottonmc.cotton.gui.client.ScreenDrawing;
 import io.github.cottonmc.cotton.gui.widget.WPanel;
 import me.codexadrian.tempad.entity.TimedoorEntity;
@@ -10,6 +14,9 @@ import me.codexadrian.tempad.tempad.TempadItem;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.fabricmc.fabric.api.object.builder.v1.entity.FabricEntityTypeBuilder;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiComponent;
+import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Registry;
 import net.minecraft.nbt.ListTag;
@@ -137,4 +144,35 @@ public class Tempad implements ModInitializer {
         return new Color((int) r, (int) g, (int) b, (int) a);
     }
 
+    public static void coloredRect(PoseStack matrices, int left, int top, int width, int height, int color) {
+        if (width <= 0) width = 1;
+        if (height <= 0) height = 1;
+        matrices.pushPose();
+        GuiComponent.fill(matrices, left, top, left + width, top + height, color);
+        matrices.popPose();
+    }
+
+    public static void texturedRect(PoseStack matrices, ResourceLocation texture, float u1, float u2, float v1, float v2, int x, int y, int width, int height, int color) {
+        if (width <= 0) width = 1;
+        if (height <= 0) height = 1;
+
+        float r = (color >> 16 & 255) / 255.0F;
+        float g = (color >> 8 & 255) / 255.0F;
+        float b = (color & 255) / 255.0F;
+        Tesselator tessellator = Tesselator.getInstance();
+        BufferBuilder buffer = tessellator.getBuilder();
+        Matrix4f model = matrices.last().pose();
+        RenderSystem.enableBlend();
+        RenderSystem.setShaderTexture(0, texture);
+        RenderSystem.setShaderColor(r, g, b, 1);
+        RenderSystem.setShader(GameRenderer::getPositionTexShader);
+        buffer.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX);
+        buffer.vertex(model, x,         y + height, 0).uv(u1, v2).endVertex();
+        buffer.vertex(model, x + width, y + height, 0).uv(u2, v2).endVertex();
+        buffer.vertex(model, x + width, y,          0).uv(u2, v1).endVertex();
+        buffer.vertex(model, x,         y,          0).uv(u1, v1).endVertex();
+        buffer.end();
+        BufferUploader.end(buffer);
+        RenderSystem.disableBlend();
+    }
 }
