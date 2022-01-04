@@ -42,7 +42,7 @@ public class TeleportingScreen extends BaseTempadScreen{
             TempadComponent component = TempadComponent.fromStack(stack);
             component.getLocations().forEach(data -> tabbedWidget.addTabEntry(new TextComponent(data.getName()), null, (width1, height1) -> {
                 var container = new SpruceContainerWidget(Position.origin(), width1, height1);
-                SpruceIconWidget doorIcon = new SpruceIconWidget(Position.of(0, 16), new ResourceLocation(MODID, "textures/widget/timedoor_sprite.png"), 32, 32);
+                SpruceIconWidget doorIcon = new SpruceIconWidget(Position.of(width1/2 - 16, 16), new ResourceLocation(MODID, "textures/widget/timedoor_sprite.png"), 32, 32);
                 doorIcon.setTint(color);
                 container.addChild(doorIcon);
                 return container;

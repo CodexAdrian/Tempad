@@ -49,7 +49,7 @@ public class MainTempadScreenDesc extends TempadGUIDescription {
         wiki.setSize(3 * scale, 12);
         root.add(wiki, leftAlign, 10 * scale + 3);
 
-        WSprite TVAlogo = new WSprite(new ResourceLocation(MODID, "textures/widget/tva.png"));
+        WSprite TVAlogo = new WSprite(new ResourceLocation(MODID, "textures/widget/tva_logo.png"));
         TVAlogo.setTint(color);
         root.add(TVAlogo, scale/2, scale * 4, scale * 16, scale * 8);
 

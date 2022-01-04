@@ -1,23 +1,16 @@
 package me.codexadrian.tempad.client.api.gui;
 
 import dev.lambdaurora.spruceui.Position;
-import io.github.cottonmc.cotton.gui.widget.WPlainPanel;
 import io.netty.buffer.Unpooled;
 import me.codexadrian.tempad.Tempad;
-import me.codexadrian.tempad.client.gui.ColorSelectScreenDesc;
-import me.codexadrian.tempad.client.gui.TempadInterfaceGui;
-import me.codexadrian.tempad.client.widgets.ColorButton;
 import me.codexadrian.tempad.client.widgets.SpruceColorButton;
 import me.codexadrian.tempad.client.widgets.SpruceIconWidget;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
-import org.jetbrains.annotations.Nullable;
 
 import static me.codexadrian.tempad.Tempad.MODID;
 import static me.codexadrian.tempad.Tempad.colors;

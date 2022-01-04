@@ -153,6 +153,9 @@ public class Tempad implements ModInitializer {
     }
 
     public static void texturedRect(PoseStack matrices, ResourceLocation texture, float u1, float u2, float v1, float v2, int x, int y, int width, int height, int color) {
+        texturedRect(matrices, texture, u1, u2, v1, v2, x, y, width, height, color, 1);
+    }
+    public static void texturedRect(PoseStack matrices, ResourceLocation texture, float u1, float u2, float v1, float v2, int x, int y, int width, int height, int color, float opacity) {
         if (width <= 0) width = 1;
         if (height <= 0) height = 1;
 
@@ -164,7 +167,7 @@ public class Tempad implements ModInitializer {
         Matrix4f model = matrices.last().pose();
         RenderSystem.enableBlend();
         RenderSystem.setShaderTexture(0, texture);
-        RenderSystem.setShaderColor(r, g, b, 1);
+        RenderSystem.setShaderColor(r, g, b, opacity);
         RenderSystem.setShader(GameRenderer::getPositionTexShader);
         buffer.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX);
         buffer.vertex(model, x,         y + height, 0).uv(u1, v2).endVertex();
