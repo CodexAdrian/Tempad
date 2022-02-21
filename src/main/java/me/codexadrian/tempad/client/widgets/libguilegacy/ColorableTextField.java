@@ -1,3 +1,4 @@
+/*
 package me.codexadrian.tempad.client.widgets.libguilegacy;
 
 import com.mojang.blaze3d.platform.GlStateManager;
@@ -44,13 +45,15 @@ public class ColorableTextField extends WTextField {
     private Component suggestion = null;
 
     private int cursor = 0;
-    /**
+    */
+/**
      * If not -1, select is the "anchor point" of a selection. That is, if you hit shift+left with
      * no existing selection, the selection will be anchored to where you were, but the cursor will
      * move left, expanding the selection as you continue to move left. If you move to the right,
      * eventually you'll overtake the anchor, drop the anchor at the same place and start expanding
      * the selection rightwards instead.
-     */
+     *//*
+
     private int select = -1;
 
     private Consumer<String> onChanged;
@@ -450,13 +453,15 @@ public class ColorableTextField extends WTextField {
         }
     }
 
-    /**
+    */
+/**
      * From an X offset past the left edge of a TextRenderer.draw, finds out what the closest caret
      * position (division between letters) is.
      * @param s
      * @param x
      * @return
-     */
+     *//*
+
     @Environment(EnvType.CLIENT)
     public static int getCaretPos(String s, int x) {
         if (x<=0) return 0;
@@ -474,12 +479,14 @@ public class ColorableTextField extends WTextField {
         return s.length();
     }
 
-    /**
+    */
+/**
      * From a caret position, finds out what the x-offset to draw the caret is.
      * @param s
      * @param pos
      * @return
-     */
+     *//*
+
     @Environment(EnvType.CLIENT)
     public static int getCaretOffset(String s, int pos) {
         if (pos==0) return 0;//-1;
@@ -490,3 +497,4 @@ public class ColorableTextField extends WTextField {
     }
 
 }
+*/

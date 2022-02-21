@@ -1,5 +1,6 @@
 package me.codexadrian.tempad.client.gui;
 
+/*
 import io.github.cottonmc.cotton.gui.widget.WPlainPanel;
 import io.github.cottonmc.cotton.gui.widget.WSprite;
 import me.codexadrian.tempad.client.widgets.libguilegacy.HighlightedTextButton;
@@ -54,3 +55,4 @@ public class MainTempadScreenDesc extends TempadGUIDescription {
         root.validate(this);
     }
 }
+*/

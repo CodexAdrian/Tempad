@@ -12,7 +12,6 @@ import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 
-
 public class TimedoorRenderer extends EntityRenderer<TimedoorEntity> {
 
     public TimedoorRenderer(EntityRendererProvider.Context context) {
@@ -48,10 +47,6 @@ public class TimedoorRenderer extends EntityRenderer<TimedoorEntity> {
                 width = Mth.lerp(1 - (animation - (float) closingTime / tickLength - 0.5F) * 2, 0, width);
                 height = .2F;
             }
-        } else if (ticks > tickLength) {
-            width = 1.4F;
-            height = 2.3F;
-            depth = .4F;
         }
 
         poseStack.pushPose();

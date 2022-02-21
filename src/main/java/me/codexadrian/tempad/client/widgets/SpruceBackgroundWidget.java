@@ -1,8 +1,6 @@
 package me.codexadrian.tempad.client.widgets;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import dev.lambdaurora.spruceui.Position;
-import dev.lambdaurora.spruceui.widget.AbstractSpruceWidget;
 import me.codexadrian.tempad.Tempad;
 import net.minecraft.resources.ResourceLocation;
 

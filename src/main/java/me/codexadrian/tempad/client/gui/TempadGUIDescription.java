@@ -1,5 +1,6 @@
 package me.codexadrian.tempad.client.gui;
 
+/*
 import io.github.cottonmc.cotton.gui.client.LightweightGuiDescription;
 import io.github.cottonmc.cotton.gui.widget.WPanel;
 import net.minecraft.world.InteractionHand;
@@ -26,3 +27,4 @@ public class TempadGUIDescription extends LightweightGuiDescription {
         drawUnifiedBackground(root, color, true);
     }
 }
+*/

@@ -1,11 +1,10 @@
 package me.codexadrian.tempad;
 
-import com.mojang.blaze3d.pipeline.RenderTarget;
 import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import com.mojang.blaze3d.vertex.VertexFormat;
 import me.codexadrian.tempad.client.render.TimedoorRenderer;
 import net.fabricmc.api.ClientModInitializer;
-import net.fabricmc.fabric.api.client.rendereregistry.v1.EntityRendererRegistry;
+import net.fabricmc.fabric.api.client.rendering.v1.EntityRendererRegistry;
 import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
 import net.minecraft.client.renderer.RenderStateShard;
 import net.minecraft.client.renderer.RenderType;
@@ -13,7 +12,6 @@ import net.minecraft.client.renderer.ShaderInstance;
 import net.minecraft.server.packs.PackType;
 
 public class TempadClient implements ClientModInitializer {
-    public static RenderTarget BLUR_RENDER_TARGET;
     public static ShaderInstance timedoorShader;
     public static ShaderInstance timedoorWhiteShader;
     public static ShaderInstance colorWheelShader;
@@ -24,8 +22,7 @@ public class TempadClient implements ClientModInitializer {
 
     @Override
     public void onInitializeClient() {
-        EntityRendererRegistry.INSTANCE.register(Tempad.TIMEDOOR_ENTITY_ENTITY_TYPE, TimedoorRenderer::new);
-        ResourceManagerHelper.get(PackType.CLIENT_RESOURCES).registerReloadListener(new BlurReloader());
-
+        EntityRendererRegistry.register(Tempad.TIMEDOOR_ENTITY_ENTITY_TYPE, TimedoorRenderer::new);
+        ResourceManagerHelper.get(PackType.CLIENT_RESOURCES).registerReloadListener(BlurReloader.INSTANCE);
     }
 }

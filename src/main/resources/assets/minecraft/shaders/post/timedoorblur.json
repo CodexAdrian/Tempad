@@ -1,12 +1,19 @@
 {
   "targets": [
-    "swap"
+    "swap",
+    "blur_target"
   ],
   "passes": [
     {
       "name": "timedoorblur",
       "intarget": "minecraft:main",
-      "outtarget": "swap"
+      "outtarget": "swap",
+      "auxtargets": [
+        {
+          "name": "TimedoorSampler",
+          "id": "blur_target"
+        }
+      ]
     },
     {
       "name": "blit",

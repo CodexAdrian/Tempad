@@ -1,12 +1,9 @@
 package me.codexadrian.tempad.mixin;
 
-import com.mojang.blaze3d.pipeline.TextureTarget;
 import com.mojang.blaze3d.vertex.DefaultVertexFormat;
-import com.mojang.datafixers.util.Pair;
 import me.codexadrian.tempad.BlurReloader;
-import me.codexadrian.tempad.TempadClient;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GameRenderer;
+import net.minecraft.client.renderer.PostChain;
 import net.minecraft.client.renderer.ShaderInstance;
 import net.minecraft.server.packs.resources.ResourceManager;
 import org.spongepowered.asm.mixin.Final;
@@ -16,10 +13,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
-import java.util.function.Consumer;
 
 import static me.codexadrian.tempad.TempadClient.*;
 
@@ -43,12 +37,12 @@ public class GameRendererMixin {
                 timedoorShader = null;
             }
 
-            if(colorWheelShader != null) {
+            if (colorWheelShader != null) {
                 colorWheelShader.close();
                 colorWheelShader = null;
             }
 
-            if(colorTriangleShader != null) {
+            if (colorTriangleShader != null) {
                 colorTriangleShader.close();
                 colorTriangleShader = null;
             }
@@ -63,8 +57,8 @@ public class GameRendererMixin {
     }
 
     @Inject(method = "resize", at = @At("TAIL"))
-    public void pain(int i, int j, CallbackInfo ci) {
-        TempadClient.BLUR_RENDER_TARGET = new TextureTarget(i, j, true, Minecraft.ON_OSX);
-        if(BlurReloader.timedoorBlur != null) BlurReloader.timedoorBlur.resize(i, j);
+    public void resize(int i, int j, CallbackInfo ci) {
+        PostChain timedoorBlur = BlurReloader.INSTANCE.getTimedoorBlur();
+        if (timedoorBlur != null) timedoorBlur.resize(i, j);
     }
 }

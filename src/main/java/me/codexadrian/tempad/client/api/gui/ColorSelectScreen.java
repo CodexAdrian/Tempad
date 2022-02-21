@@ -1,3 +1,4 @@
+/*
 package me.codexadrian.tempad.client.api.gui;
 
 import dev.lambdaurora.spruceui.Position;
@@ -53,3 +54,4 @@ public class ColorSelectScreen extends BaseTempadScreen2 {
         }
     }
 }
+*/

@@ -49,9 +49,10 @@ public class TimedoorEntity extends Entity {
 
     @Override
     protected void readAdditionalSaveData(CompoundTag compoundTag) {
-        this.setLocation(LocationData.fromTag(compoundTag.getCompound("location")));
+        if (compoundTag.hasUUID("location")) this.setLocation(LocationData.fromTag(compoundTag.getCompound("location")));
+        if (compoundTag.hasUUID("owner")) this.setOwner(compoundTag.getUUID("owner"));
+
         this.setClosingTime(compoundTag.getInt("closing_time"));
-        this.setOwner(compoundTag.getUUID("owner"));
         this.setColor(compoundTag.getInt("outline_color"));
         if (compoundTag.contains("linked_portal")) {
             this.setLinkedPortalId(compoundTag.getUUID("linked_portal"));
@@ -60,9 +61,10 @@ public class TimedoorEntity extends Entity {
 
     @Override
     protected void addAdditionalSaveData(CompoundTag compoundTag) {
-        compoundTag.put("location", locationData.toTag());
+        if (locationData != null) compoundTag.put("location", locationData.toTag());
+        if (getOwner() != null) compoundTag.putUUID("owner", getOwner());
+
         compoundTag.putInt("closing_time", getClosingTime());
-        compoundTag.putUUID("owner", getOwner());
         compoundTag.putInt("outline_color", getColor());
         if (getLinkedPortalId() != null) {
             compoundTag.putUUID("linked_portal", getLinkedPortalId());

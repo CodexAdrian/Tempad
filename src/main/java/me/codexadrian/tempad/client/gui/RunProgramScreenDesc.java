@@ -1,5 +1,6 @@
 package me.codexadrian.tempad.client.gui;
 
+/*
 import io.github.cottonmc.cotton.gui.widget.WListPanel;
 import io.github.cottonmc.cotton.gui.widget.WPlainPanel;
 import io.github.cottonmc.cotton.gui.widget.WSprite;
@@ -139,3 +140,4 @@ public class RunProgramScreenDesc extends TempadGUIDescription {
 
     }
 }
+*/

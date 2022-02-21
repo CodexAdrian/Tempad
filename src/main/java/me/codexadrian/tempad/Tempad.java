@@ -3,9 +3,6 @@ package me.codexadrian.tempad;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.*;
 import com.mojang.math.Matrix4f;
-import dev.lambdaurora.spruceui.util.ScissorManager;
-import io.github.cottonmc.cotton.gui.client.ScreenDrawing;
-import io.github.cottonmc.cotton.gui.widget.WPanel;
 import me.codexadrian.tempad.entity.TimedoorEntity;
 import me.codexadrian.tempad.tempad.ColorDataComponent;
 import me.codexadrian.tempad.tempad.LocationData;
@@ -14,12 +11,10 @@ import me.codexadrian.tempad.tempad.TempadItem;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.fabricmc.fabric.api.object.builder.v1.entity.FabricEntityTypeBuilder;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiComponent;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Registry;
-import net.minecraft.nbt.ListTag;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.InteractionHand;
@@ -29,7 +24,6 @@ import net.minecraft.world.entity.MobCategory;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -48,37 +42,38 @@ public class Tempad implements ModInitializer {
     public static final ResourceLocation LOCATION_PACKET = new ResourceLocation(MODID, "location");
     public static final ResourceLocation SET_COLOR_PACKET = new ResourceLocation(MODID, "color");
     public static final ResourceLocation DELETE_LOCATION_PACKET = new ResourceLocation(MODID, "delete_location");
+
     public static final int[] colors = {
-            0xFF_FFFFFF,
-            0xFF_F51302,
-            0xFF_F77B05,
-            0xFF_F89506,
-            0xFF_FAB306,
-            0xFF_FBCF01,
-            0xFF_FEF304,
-            0xFF_EBFE05,
-            0xFF_CBFD03,
-            0xFF_82FE01,
-            0xFF_53FE00,
-            0xFF_53FE84,
-            0xFF_53FEB1,
-            0xFF_52FEDF,
-            0xFF_52FEF8,
-            0xFF_45DAFE,
-            0xFF_3ABDFE,
-            0xFF_2A93FB,
-            0xFF_165EFB,
-            0xFF_061AFB,
-            0xFF_471AFC,
-            0xFF_6519FC,
-            0xFF_7C19FC,
-            0xFF_9019FE,
-            0xFF_B319FD,
-            0xFF_D618FC,
-            0xFF_F418FC,
-            0xFF_EE28B0,
-            0xFF_EC3785,
-            0xFF_EB3860,
+            0xFFFFFF,
+            0xF51302,
+            0xF77B05,
+            0xF89506,
+            0xFAB306,
+            0xFBCF01,
+            0xFEF304,
+            0xEBFE05,
+            0xCBFD03,
+            0x82FE01,
+            0x53FE00,
+            0x53FE84,
+            0x53FEB1,
+            0x52FEDF,
+            0x52FEF8,
+            0x45DAFE,
+            0x3ABDFE,
+            0x2A93FB,
+            0x165EFB,
+            0x061AFB,
+            0x471AFC,
+            0x6519FC,
+            0x7C19FC,
+            0x9019FE,
+            0xB319FD,
+            0xD618FC,
+            0xF418FC,
+            0xEE28B0,
+            0xEC3785,
+            0xEB3860,
     };
 
     @Override
@@ -124,12 +119,12 @@ public class Tempad implements ModInitializer {
         });
     }
 
-    public static void drawUnifiedBackground(WPanel root, int color, boolean blend) {
+/*    public static void drawUnifiedBackground(WPanel root, int color, boolean blend) {
         root.setBackgroundPainter((matrices, left, top, panel) -> {
             ScreenDrawing.coloredRect(matrices, left - 2, top - 2, 484, 260, color);
             ScreenDrawing.texturedRect(matrices, left, top, 480, 256, new ResourceLocation(MODID, "textures/widget/tempad_grid.png"), 0, 0, 30, 16, blend ? blend(Color.getColor("orange", color), Color.gray).getRGB() : color);
         });
-    }
+    }*/
 
     public static Color blend(Color c0, Color c1) {
         double totalAlpha = c0.getAlpha() + c1.getAlpha();
@@ -155,6 +150,7 @@ public class Tempad implements ModInitializer {
     public static void texturedRect(PoseStack matrices, ResourceLocation texture, float u1, float u2, float v1, float v2, int x, int y, int width, int height, int color) {
         texturedRect(matrices, texture, u1, u2, v1, v2, x, y, width, height, color, 1);
     }
+
     public static void texturedRect(PoseStack matrices, ResourceLocation texture, float u1, float u2, float v1, float v2, int x, int y, int width, int height, int color, float opacity) {
         if (width <= 0) width = 1;
         if (height <= 0) height = 1;

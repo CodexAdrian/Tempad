@@ -1,3 +1,4 @@
+/*
 package me.codexadrian.tempad.client.widgets.libguilegacy;
 
 import com.mojang.blaze3d.vertex.PoseStack;
@@ -43,3 +44,4 @@ public class ScalableText extends WWidget {
         return height;
     }
 }
+*/

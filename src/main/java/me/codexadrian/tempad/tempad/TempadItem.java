@@ -1,16 +1,11 @@
 package me.codexadrian.tempad.tempad;
 
-import io.github.cottonmc.cotton.gui.client.CottonClientScreen;
 import me.codexadrian.tempad.Tempad;
-import me.codexadrian.tempad.client.api.gui.BaseTempadScreen2;
-import me.codexadrian.tempad.client.api.gui.ColorSelectScreen;
-import me.codexadrian.tempad.client.api.gui.TeleportingScreen;
-import me.codexadrian.tempad.client.gui.MainTempadScreenDesc;
+import me.codexadrian.tempad.client.gui.TempadScreen;
 import me.codexadrian.tempad.entity.TimedoorEntity;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.Minecraft;
-import net.minecraft.network.chat.TextComponent;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.player.Player;
@@ -53,8 +48,10 @@ public class TempadItem extends Item {
     @Environment(EnvType.CLIENT)
     private void openScreen(Player player, InteractionHand interactionHand) {
         int color = ColorDataComponent.COLOR_DATA.get(player).getColor();
-        //Minecraft.getInstance().setScreen(new ColorSelectScreen(color, player, interactionHand));
-        //Minecraft.getInstance().setScreen(new ColorSelectScreen(color, player, interactionHand));
-        Minecraft.getInstance().setScreen(new CottonClientScreen(new MainTempadScreenDesc(color, player, interactionHand)));
+        Minecraft.getInstance().setScreen(new TempadScreen(color));
+
+        // Minecraft.getInstance().setScreen(new ColorSelectScreen(color, player, interactionHand));
+        // Minecraft.getInstance().setScreen(new ColorSelectScreen(color, player, interactionHand));
+        // Minecraft.getInstance().setScreen(new CottonClientScreen(new MainTempadScreenDesc(color, player, interactionHand)));
     }
 }

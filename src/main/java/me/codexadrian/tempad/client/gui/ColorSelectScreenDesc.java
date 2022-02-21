@@ -1,6 +1,6 @@
 package me.codexadrian.tempad.client.gui;
 
-
+/*
 import io.github.cottonmc.cotton.gui.widget.WPanel;
 import io.github.cottonmc.cotton.gui.widget.WPlainPanel;
 import io.netty.buffer.Unpooled;
@@ -66,3 +66,4 @@ public class ColorSelectScreenDesc extends TempadGUIDescription {
 
 
 }
+*/

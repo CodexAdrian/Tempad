@@ -1,5 +1,6 @@
 package me.codexadrian.tempad.client.gui;
 
+/*
 import io.github.cottonmc.cotton.gui.GuiDescription;
 import io.github.cottonmc.cotton.gui.client.CottonClientScreen;
 import net.minecraft.client.Minecraft;
@@ -29,3 +30,4 @@ public class TempadInterfaceGui extends CottonClientScreen {
         return false;
     }
 }
+*/

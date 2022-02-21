@@ -3,26 +3,20 @@ package me.codexadrian.tempad.client.render;
 import com.mojang.blaze3d.pipeline.RenderTarget;
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.shaders.AbstractUniform;
-import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Vector3f;
 import me.codexadrian.tempad.BlurReloader;
 import me.codexadrian.tempad.TempadClient;
 import me.codexadrian.tempad.entity.TimedoorEntity;
-import me.codexadrian.tempad.PostChainAccessor;
 import net.minecraft.client.Camera;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.PostPass;
 import net.minecraft.util.Mth;
-import net.minecraft.world.entity.Entity;
 import net.minecraft.world.phys.Vec3;
-import org.lwjgl.glfw.GLFW;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL30;
 
 import java.util.Comparator;
-import java.util.List;
 import java.util.stream.StreamSupport;
 
 public class TimedoorBlurRenderer {
@@ -30,7 +24,9 @@ public class TimedoorBlurRenderer {
     public static void renderBlur(float deltaTime, PoseStack poseStack, Camera camera) {
         Minecraft minecraft = Minecraft.getInstance();
         RenderTarget renderTexture = minecraft.getMainRenderTarget();
-        RenderTarget blurRenderTarget = TempadClient.BLUR_RENDER_TARGET;
+        RenderTarget blurRenderTarget = BlurReloader.INSTANCE.getRenderTarget();
+        if (blurRenderTarget == null) return;
+
         //blurRenderTarget.clear(false);
         clear(blurRenderTarget);
         blurRenderTarget.copyDepthFrom(renderTexture);
@@ -40,8 +36,6 @@ public class TimedoorBlurRenderer {
         double cameraX = position.x();
         double cameraY = position.y();
         double cameraZ = position.z();
-
-
 
         AbstractUniform inSize = TempadClient.timedoorShader.safeGetUniform("InSize");
         AbstractUniform viewMatUniform = TempadClient.timedoorShader.safeGetUniform("ViewMat");
@@ -72,12 +66,7 @@ public class TimedoorBlurRenderer {
         GlStateManager._glBlitFrameBuffer(0, 0, renderTexture.width, renderTexture.height, 0, 0, renderTexture.width/4, renderTexture.height/4, GL11.GL_COLOR_BUFFER_BIT, GL11.GL_NEAREST);
 */
 
-        List<PostPass> passes = ((PostChainAccessor) BlurReloader.timedoorBlur).getPasses();
-        for (PostPass pass : passes) {
-            pass.getEffect().setSampler("TimedoorSampler", blurRenderTarget::getColorTextureId);
-        }
-
-        BlurReloader.timedoorBlur.process(deltaTime);
+        BlurReloader.INSTANCE.getTimedoorBlur().process(deltaTime);
         renderTexture.bindWrite(false);
     }
 
@@ -85,11 +74,10 @@ public class TimedoorBlurRenderer {
         GlStateManager._glBindFramebuffer(GL30.GL_FRAMEBUFFER, renderTarget.frameBufferId);
     }
 
-
     public static void clear(RenderTarget renderTarget) {
         bindAll(renderTarget);
         GlStateManager._clear(GL11.GL_COLOR_BUFFER_BIT, false);
-        GlStateManager._clearColor(0,0,0,0);
+        GlStateManager._clearColor(0, 0, 0, 0);
         GlStateManager._glBindFramebuffer(GL30.GL_FRAMEBUFFER, 0);
     }
 }

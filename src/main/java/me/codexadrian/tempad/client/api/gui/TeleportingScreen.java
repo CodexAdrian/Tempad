@@ -1,3 +1,4 @@
+/*
 package me.codexadrian.tempad.client.api.gui;
 
 import dev.lambdaurora.spruceui.Position;
@@ -26,7 +27,8 @@ public class TeleportingScreen extends BaseTempadScreen {
     @Override
     protected void init() {
         super.init();
-        /*
+        */
+/*
         SpruceIconWidget doorIcon1 = new SpruceIconWidget(Position.of(this.width / 2 - PANEL_WIDTH / 2, height / 2 - PANEL_HEIGHT / 2), TIMEDOOR_SPRITE, 32, 32);
         addWidget(doorIcon1);
         SpruceTabbedWidget tabbedWidget = new SpruceTabbedWidget(Position.of(this.width / 2 - PANEL_WIDTH / 2, height / 2 - PANEL_HEIGHT / 2), PANEL_WIDTH, PANEL_HEIGHT, this.title);
@@ -56,6 +58,8 @@ public class TeleportingScreen extends BaseTempadScreen {
         }
         //addWidget(tabbedWidget);
 
-         */
+         *//*
+
     }
 }
+*/

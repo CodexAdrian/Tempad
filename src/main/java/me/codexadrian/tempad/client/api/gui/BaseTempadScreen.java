@@ -1,3 +1,4 @@
+/*
 package me.codexadrian.tempad.client.api.gui;
 
 import dev.lambdaurora.spruceui.Position;
@@ -42,3 +43,4 @@ public class BaseTempadScreen extends SpruceScreen {
         return (this.height / 2) - (PANEL_HEIGHT / 2);
     }
 }
+*/

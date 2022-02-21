@@ -10,9 +10,9 @@ import static me.codexadrian.tempad.Tempad.MODID;
 
 public class ColorDataComponent implements AutoSyncedComponent {
 
-    public static ComponentKey<ColorDataComponent> COLOR_DATA = ComponentRegistryV3.INSTANCE.getOrCreate(new ResourceLocation(MODID, "tempad_color_data"), ColorDataComponent.class);
+    public static final ComponentKey<ColorDataComponent> COLOR_DATA = ComponentRegistryV3.INSTANCE.getOrCreate(new ResourceLocation(MODID, "tempad_color_data"), ColorDataComponent.class);
 
-    private int color = 0xFF_ff6f00;
+    private int color = 0xff6f00;
 
     @Override
     public void readFromNbt(CompoundTag tag) {
