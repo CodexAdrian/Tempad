@@ -170,10 +170,10 @@ public class Tempad implements ModInitializer {
         RenderSystem.setShaderColor(r, g, b, opacity);
         RenderSystem.setShader(GameRenderer::getPositionTexShader);
         buffer.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX);
-        buffer.vertex(model, x,         y + height, 0).uv(u1, v2).endVertex();
+        buffer.vertex(model, x, y + height, 0).uv(u1, v2).endVertex();
         buffer.vertex(model, x + width, y + height, 0).uv(u2, v2).endVertex();
-        buffer.vertex(model, x + width, y,          0).uv(u2, v1).endVertex();
-        buffer.vertex(model, x,         y,          0).uv(u1, v1).endVertex();
+        buffer.vertex(model, x + width, y,0).uv(u2, v1).endVertex();
+        buffer.vertex(model, x, y,0).uv(u1, v1).endVertex();
         buffer.end();
         BufferUploader.end(buffer);
         RenderSystem.disableBlend();

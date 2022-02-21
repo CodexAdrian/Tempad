@@ -1,4 +1,4 @@
-package me.codexadrian.tempad.client.widgets;
+package me.codexadrian.tempad.client.widgets.libguilegacy;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import io.github.cottonmc.cotton.gui.client.ScreenDrawing;

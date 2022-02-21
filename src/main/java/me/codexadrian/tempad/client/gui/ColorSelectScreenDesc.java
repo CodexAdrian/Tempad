@@ -5,7 +5,7 @@ import io.github.cottonmc.cotton.gui.widget.WPanel;
 import io.github.cottonmc.cotton.gui.widget.WPlainPanel;
 import io.netty.buffer.Unpooled;
 import me.codexadrian.tempad.Tempad;
-import me.codexadrian.tempad.client.widgets.ColorButton;
+import me.codexadrian.tempad.client.widgets.libguilegacy.ColorButton;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.FriendlyByteBuf;

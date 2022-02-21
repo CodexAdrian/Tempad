@@ -1,4 +1,4 @@
-package me.codexadrian.tempad.client.widgets;
+package me.codexadrian.tempad.client.widgets.libguilegacy;
 
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;

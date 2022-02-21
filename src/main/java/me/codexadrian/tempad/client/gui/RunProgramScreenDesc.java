@@ -5,9 +5,9 @@ import io.github.cottonmc.cotton.gui.widget.WPlainPanel;
 import io.github.cottonmc.cotton.gui.widget.WSprite;
 import io.netty.buffer.Unpooled;
 import me.codexadrian.tempad.Tempad;
-import me.codexadrian.tempad.client.widgets.ColorableTextField;
-import me.codexadrian.tempad.client.widgets.HighlightedTextButton;
-import me.codexadrian.tempad.client.widgets.ScalableText;
+import me.codexadrian.tempad.client.widgets.libguilegacy.ColorableTextField;
+import me.codexadrian.tempad.client.widgets.libguilegacy.HighlightedTextButton;
+import me.codexadrian.tempad.client.widgets.libguilegacy.ScalableText;
 import me.codexadrian.tempad.tempad.LocationData;
 import me.codexadrian.tempad.tempad.TempadComponent;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
@@ -21,12 +21,9 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.Nullable;
 
-import javax.xml.stream.Location;
 import java.awt.*;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
 
 import static me.codexadrian.tempad.Tempad.MODID;
 import static me.codexadrian.tempad.Tempad.blend;

@@ -1,11 +1,9 @@
 package me.codexadrian.tempad.client.gui;
 
-import io.github.cottonmc.cotton.gui.client.LightweightGuiDescription;
-import io.github.cottonmc.cotton.gui.widget.WPanel;
 import io.github.cottonmc.cotton.gui.widget.WPlainPanel;
 import io.github.cottonmc.cotton.gui.widget.WSprite;
-import me.codexadrian.tempad.client.widgets.HighlightedTextButton;
-import me.codexadrian.tempad.client.widgets.ScalableText;
+import me.codexadrian.tempad.client.widgets.libguilegacy.HighlightedTextButton;
+import me.codexadrian.tempad.client.widgets.libguilegacy.ScalableText;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;

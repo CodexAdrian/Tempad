@@ -2,6 +2,7 @@ package me.codexadrian.tempad.tempad;
 
 import io.github.cottonmc.cotton.gui.client.CottonClientScreen;
 import me.codexadrian.tempad.Tempad;
+import me.codexadrian.tempad.client.api.gui.BaseTempadScreen2;
 import me.codexadrian.tempad.client.api.gui.ColorSelectScreen;
 import me.codexadrian.tempad.client.api.gui.TeleportingScreen;
 import me.codexadrian.tempad.client.gui.MainTempadScreenDesc;
@@ -9,11 +10,13 @@ import me.codexadrian.tempad.entity.TimedoorEntity;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.Minecraft;
+import net.minecraft.network.chat.TextComponent;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.UseAnim;
 import net.minecraft.world.level.Level;
 
 public class TempadItem extends Item {
@@ -27,6 +30,11 @@ public class TempadItem extends Item {
         ItemStack stack = player.getItemInHand(interactionHand);
         if (level.isClientSide) openScreen(player, interactionHand);
         return InteractionResultHolder.success(stack);
+    }
+
+    @Override
+    public UseAnim getUseAnimation(ItemStack itemStack) {
+        return super.getUseAnimation(itemStack);
     }
 
     public static void summonTimeDoor(LocationData locationData, Player player) {
@@ -45,7 +53,8 @@ public class TempadItem extends Item {
     @Environment(EnvType.CLIENT)
     private void openScreen(Player player, InteractionHand interactionHand) {
         int color = ColorDataComponent.COLOR_DATA.get(player).getColor();
-        Minecraft.getInstance().setScreen(new TeleportingScreen(color, player, interactionHand));
-        //Minecraft.getInstance().setScreen(new CottonClientScreen(new MainTempadScreenDesc(color, player, interactionHand)));
+        //Minecraft.getInstance().setScreen(new ColorSelectScreen(color, player, interactionHand));
+        //Minecraft.getInstance().setScreen(new ColorSelectScreen(color, player, interactionHand));
+        Minecraft.getInstance().setScreen(new CottonClientScreen(new MainTempadScreenDesc(color, player, interactionHand)));
     }
 }
