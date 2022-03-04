@@ -1,5 +1,6 @@
 package me.codexadrian.tempad.client.widgets;
 
+import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import dev.lambdaurora.spruceui.Position;
 import dev.lambdaurora.spruceui.widget.SpruceButtonWidget;
@@ -31,8 +32,8 @@ public class SpruceColorButton extends BaseWidget {
     @Override
     public void renderWidget(PoseStack matrices, int mouseX, int mouseY, float delta) {
         matrices.pushPose();
-        Tempad.coloredRect(matrices, getX()-1, getY()-1, getWidth()+2, getHeight()+2, blend(Color.gray, Color.getColor("border", color)).getRGB());
-        Tempad.coloredRect(matrices, getX(), getY(), getWidth(), getHeight(), color);
+        Tempad.coloredRect(matrices, getX()-1, getY()-1, getWidth()+2, getHeight()+2, blend(Color.gray, Color.getColor("border", this.color)).getRGB());
+        Tempad.coloredRect(matrices, getX(), getY(), getWidth(), getHeight(), this.color);
         matrices.popPose();
     }
 

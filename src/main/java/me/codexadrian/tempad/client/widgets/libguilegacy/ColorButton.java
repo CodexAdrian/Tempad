@@ -1,5 +1,6 @@
 package me.codexadrian.tempad.client.widgets.libguilegacy;
 
+import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import io.github.cottonmc.cotton.gui.client.ScreenDrawing;
 import io.github.cottonmc.cotton.gui.widget.WWidget;
@@ -40,6 +41,7 @@ public class ColorButton extends WWidget {
     @Override
     public void paint(PoseStack matrices, int x, int y, int mouseX, int mouseY) {
         matrices.pushPose();
+        RenderSystem.setShaderColor(1, 1, 1, 1);
         ScreenDrawing.coloredRect(matrices, x-1, y-1, width+2, height+2, borderColor);
         ScreenDrawing.coloredRect(matrices, x, y, width, height, buttonColor);
         matrices.popPose();

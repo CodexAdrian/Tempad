@@ -6,6 +6,7 @@ import me.codexadrian.tempad.client.api.gui.BaseTempadScreen2;
 import me.codexadrian.tempad.client.api.gui.ColorSelectScreen;
 import me.codexadrian.tempad.client.api.gui.TeleportingScreen;
 import me.codexadrian.tempad.client.gui.MainTempadScreenDesc;
+import me.codexadrian.tempad.client.gui.TempadInterfaceGui;
 import me.codexadrian.tempad.entity.TimedoorEntity;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -55,6 +56,13 @@ public class TempadItem extends Item {
         int color = ColorDataComponent.COLOR_DATA.get(player).getColor();
         //Minecraft.getInstance().setScreen(new ColorSelectScreen(color, player, interactionHand));
         //Minecraft.getInstance().setScreen(new ColorSelectScreen(color, player, interactionHand));
-        Minecraft.getInstance().setScreen(new CottonClientScreen(new MainTempadScreenDesc(color, player, interactionHand)));
+        Minecraft.getInstance().setScreen(new CottonClientScreen(new MainTempadScreenDesc(color, player, interactionHand)){
+            @Override
+            public boolean isPauseScreen() {
+                return false;
+            }
+        });
     }
+
+
 }

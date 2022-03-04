@@ -120,6 +120,7 @@ public class RunProgramScreenDesc extends TempadGUIDescription {
             FriendlyByteBuf buf = new FriendlyByteBuf(Unpooled.buffer());
             buf.writeResourceLocation(tempadLocation.getLevelKey().location());
             buf.writeBlockPos(tempadLocation.getBlockPos());
+            buf.writeEnum(hand);
             Minecraft.getInstance().setScreen(null);
             ClientPlayNetworking.send(Tempad.TIMEDOOR_PACKET, buf);
         });

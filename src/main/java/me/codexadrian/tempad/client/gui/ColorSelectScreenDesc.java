@@ -16,7 +16,6 @@ import static me.codexadrian.tempad.Tempad.colors;
 import static me.codexadrian.tempad.Tempad.drawUnifiedBackground;
 
 public class ColorSelectScreenDesc extends TempadGUIDescription {
-    public int color;
     public ColorSelectScreenDesc(int passedColor, Player player, InteractionHand hand) {
         super(passedColor, player, hand);
         int scale = 16;
@@ -61,7 +60,7 @@ public class ColorSelectScreenDesc extends TempadGUIDescription {
     @Override
     public void addPainters() {
         WPanel root = getRootPanel();
-        drawUnifiedBackground(root, 0xFF_FFFFFF, false);
+        drawUnifiedBackground(root, color, true);
     }
 
 

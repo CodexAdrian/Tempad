@@ -2,6 +2,7 @@ package me.codexadrian.tempad.client.gui;
 
 import io.github.cottonmc.cotton.gui.widget.WPlainPanel;
 import io.github.cottonmc.cotton.gui.widget.WSprite;
+import me.codexadrian.tempad.client.api.gui.ColorSelectScreen;
 import me.codexadrian.tempad.client.widgets.libguilegacy.HighlightedTextButton;
 import me.codexadrian.tempad.client.widgets.libguilegacy.ScalableText;
 import net.minecraft.client.Minecraft;
