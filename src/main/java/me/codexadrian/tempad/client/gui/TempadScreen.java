@@ -86,15 +86,7 @@ public class TempadScreen extends Screen {
             Font font = minecraft.font;
             renderBg(poseStack, minecraft, mouseX, mouseY);
             poseStack.pushPose();
-            // poseStack.translate(TempadScreen.this.width / 2f, TempadScreen.this.height / 2f, TempadScreen.this.getBlitOffset());
-            // poseStack.translate(-488, -256, 0); = 1
-            // poseStack.translate(-252, -128, 0); = 2
-            // poseStack.translate(-174, -88, 0); = 3
-            // poseStack.translate(-134, -68, 0); = 4
-            float s = Minecraft.getInstance().options.guiScale;
-            poseStack.translate(114 * s - 547, 0, 0);
-            poseStack.scale(1.5f, 1.5f, 1.5f);
-            drawCenteredString(poseStack, font, getMessage(), x + width / 2, y + (height - 8) / 2, color);
+            drawCenteredString(poseStack, font, getMessage(), x + (TempadScreen.this.width - WIDTH) / 2, y + (TempadScreen.this.height - HEIGHT) / 2, color);
             poseStack.popPose();
         }
     }

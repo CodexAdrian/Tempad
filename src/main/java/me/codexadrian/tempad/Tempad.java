@@ -91,6 +91,8 @@ public class Tempad implements ModInitializer {
         ServerPlayNetworking.registerGlobalReceiver(TIMEDOOR_PACKET, (server, player, handler, buf, responseSender) -> {
             ResourceKey<Level> resourceKey = ResourceKey.create(Registry.DIMENSION_REGISTRY, buf.readResourceLocation());
             BlockPos target = buf.readBlockPos();
+            InteractionHand hand = buf.readEnum(InteractionHand.class);
+            player.getCooldowns().addCooldown(player.getItemInHand(hand).getItem(), 3600);
             server.execute(() -> TempadItem.summonTimeDoor(new LocationData("", resourceKey, target), player));
         });
 
