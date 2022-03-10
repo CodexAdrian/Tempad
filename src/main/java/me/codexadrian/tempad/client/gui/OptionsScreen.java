@@ -12,19 +12,22 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.InteractionHand;
 
 import static me.codexadrian.tempad.Tempad.colors;
 
 public class OptionsScreen extends Screen {
     private static final ResourceLocation GRID = new ResourceLocation(Tempad.MODID, "textures/widget/tempad_grid.png");
+    private final InteractionHand hand;
     private int color;
 
     private static final int WIDTH = 480;
     private static final int HEIGHT = 256;
 
-    public OptionsScreen(int color) {
+    public OptionsScreen(int color, InteractionHand hand) {
         super(Component.nullToEmpty(""));
         this.color = color;
+        this.hand = hand;
     }
 
     @Override
@@ -105,7 +108,7 @@ public class OptionsScreen extends Screen {
 
     @Override
     public void onClose() {
-        minecraft.setScreen(new TempadScreen(color));
+        minecraft.setScreen(new TempadScreen(color, hand));
     }
 
     public static class ColorButton extends Button {

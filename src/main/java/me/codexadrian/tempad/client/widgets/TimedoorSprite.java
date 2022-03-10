@@ -15,7 +15,10 @@ import net.minecraft.resources.ResourceLocation;
 import static net.minecraft.client.gui.GuiComponent.blit;
 
 public class TimedoorSprite implements Widget, GuiEventListener, NarratableEntry {
-    private final int color, size, x, y;
+    private final int color;
+    private final int size;
+    private int x;
+    private int y;
     private int age;
 
     public TimedoorSprite(int x, int y, int color, int size) {
@@ -23,6 +26,11 @@ public class TimedoorSprite implements Widget, GuiEventListener, NarratableEntry
         this.y = y;
         this.color = color;
         this.size = size;
+    }
+
+    public void changePosition(int x, int y) {
+        this.x = x;
+        this.y = y;
     }
 
     @Override

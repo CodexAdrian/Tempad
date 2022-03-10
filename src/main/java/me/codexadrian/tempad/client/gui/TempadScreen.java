@@ -10,6 +10,8 @@ import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.entity.player.Player;
 
 public class TempadScreen extends Screen {
     private static final ResourceLocation GRID = new ResourceLocation(Tempad.MODID, "textures/widget/tempad_grid.png");
@@ -18,19 +20,21 @@ public class TempadScreen extends Screen {
 
     private static final int WIDTH = 480;
     private static final int HEIGHT = 256;
+    private final InteractionHand hand;
 
-    public TempadScreen(int color) {
+    public TempadScreen(int color, InteractionHand hand) {
         super(Component.nullToEmpty(""));
         this.color = color;
+        this.hand = hand;
     }
 
     @Override
     protected void init() {
         super.init();
         int offset = 3;
-        addRenderableWidget(new TextButton((width - WIDTH) / 2 + 16 * 17 + offset, (height - HEIGHT) / 2 + 16 * 8 + offset, 12, new TranslatableComponent("gui." + Tempad.MODID + ".options"), color, button -> minecraft.setScreen(new OptionsScreen(color))));
+        addRenderableWidget(new TextButton((width - WIDTH) / 2 + 16 * 17 + offset, (height - HEIGHT) / 2 + 16 * 8 + offset, 12, new TranslatableComponent("gui." + Tempad.MODID + ".options"), color, button -> minecraft.setScreen(new OptionsScreen(color, hand))));
 
-        addRenderableWidget(new TextButton((width - WIDTH) / 2 + 16 * 17 + offset, (height - HEIGHT) / 2 + 16 * 9 + offset, 12, new TranslatableComponent("gui." + Tempad.MODID + ".run_program"), color, button -> minecraft.setScreen(new RunProgramScreen(color))));
+        addRenderableWidget(new TextButton((width - WIDTH) / 2 + 16 * 17 + offset, (height - HEIGHT) / 2 + 16 * 9 + offset, 12, new TranslatableComponent("gui." + Tempad.MODID + ".run_program"), color, button -> minecraft.setScreen(new RunProgramScreen(color, this.hand))));
 
         addRenderableWidget(new TextButton((width - WIDTH) / 2 + 16 * 17 + offset, (height - HEIGHT) / 2 + 16 * 10 + offset, 12, new TranslatableComponent("gui." + Tempad.MODID + ".wiki"), color, button -> {
         }));

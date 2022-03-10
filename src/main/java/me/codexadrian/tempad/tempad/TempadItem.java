@@ -48,6 +48,6 @@ public class TempadItem extends Item {
     @Environment(EnvType.CLIENT)
     private void openScreen(Player player, InteractionHand interactionHand) {
         int color = ColorDataComponent.COLOR_DATA.get(player).getColor();
-        Minecraft.getInstance().setScreen(new TempadScreen(color));
+        Minecraft.getInstance().setScreen(new TempadScreen(color, interactionHand));
     }
 }

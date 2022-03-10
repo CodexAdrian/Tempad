@@ -7,6 +7,8 @@
   "gui.tempad.textfield": "Name:",
   "gui.tempad.new_location": "(+) New Location",
   "gui.tempad.create_location": "Add Location",
+  "gui.tempad.teleport": "Teleport",
+  "gui.tempad.delete": "Delete Location",
   "gui.tempad.options_header": "Select a Color:",
   "gui.tempad.timedoor": "Timedoor",
   "item.tempad.tempad": "Tempad"

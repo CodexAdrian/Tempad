@@ -1,8 +1,5 @@
 package me.codexadrian.tempad;
 
-import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.*;
-import com.mojang.math.Matrix4f;
 import me.codexadrian.tempad.entity.TimedoorEntity;
 import me.codexadrian.tempad.tempad.ColorDataComponent;
 import me.codexadrian.tempad.tempad.LocationData;
@@ -11,8 +8,6 @@ import me.codexadrian.tempad.tempad.TempadItem;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.fabricmc.fabric.api.object.builder.v1.entity.FabricEntityTypeBuilder;
-import net.minecraft.client.gui.GuiComponent;
-import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceKey;
@@ -28,7 +23,6 @@ import net.minecraft.world.level.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.awt.*;
 import java.nio.charset.StandardCharsets;
 import java.util.UUID;
 
@@ -101,11 +95,6 @@ public class Tempad implements ModInitializer {
             String name = (String) buf.readCharSequence(index, StandardCharsets.UTF_8);
             InteractionHand hand = buf.readEnum(InteractionHand.class);
             server.execute(() -> {
-            /*    ItemStack stack = player.getItemInHand(hand);
-                String dimension = player.level.dimension().location().toString();
-                ListTag listTag = stack.getOrCreateTag().getList(dimension, 10);
-                listTag.add(tempadLocation.toTag());
-                stack.getOrCreateTag().put(dimension, listTag);*/
                 ItemStack stack = player.getItemInHand(hand);
                 var tempadLocation = new LocationData(name, player.level.dimension(), player.blockPosition());
 
@@ -119,61 +108,5 @@ public class Tempad implements ModInitializer {
             ItemStack stack = player.getItemInHand(hand);
             server.execute(() -> TempadComponent.deleteStackLocation(stack, locationId));
         });
-    }
-
-/*    public static void drawUnifiedBackground(WPanel root, int color, boolean blend) {
-        root.setBackgroundPainter((matrices, left, top, panel) -> {
-            ScreenDrawing.coloredRect(matrices, left - 2, top - 2, 484, 260, color);
-            ScreenDrawing.texturedRect(matrices, left, top, 480, 256, new ResourceLocation(MODID, "textures/widget/tempad_grid.png"), 0, 0, 30, 16, blend ? blend(Color.getColor("orange", color), Color.gray).getRGB() : color);
-        });
-    }*/
-
-    public static Color blend(Color c0, Color c1) {
-        double totalAlpha = c0.getAlpha() + c1.getAlpha();
-        double weight0 = c0.getAlpha() / totalAlpha;
-        double weight1 = c1.getAlpha() / totalAlpha;
-
-        double r = weight0 * c0.getRed() + weight1 * c1.getRed();
-        double g = weight0 * c0.getGreen() + weight1 * c1.getGreen();
-        double b = weight0 * c0.getBlue() + weight1 * c1.getBlue();
-        double a = Math.max(c0.getAlpha(), c1.getAlpha());
-
-        return new Color((int) r, (int) g, (int) b, (int) a);
-    }
-
-    public static void coloredRect(PoseStack matrices, int left, int top, int width, int height, int color) {
-        if (width <= 0) width = 1;
-        if (height <= 0) height = 1;
-        matrices.pushPose();
-        GuiComponent.fill(matrices, left, top, left + width, top + height, color);
-        matrices.popPose();
-    }
-
-    public static void texturedRect(PoseStack matrices, ResourceLocation texture, float u1, float u2, float v1, float v2, int x, int y, int width, int height, int color) {
-        texturedRect(matrices, texture, u1, u2, v1, v2, x, y, width, height, color, 1);
-    }
-
-    public static void texturedRect(PoseStack matrices, ResourceLocation texture, float u1, float u2, float v1, float v2, int x, int y, int width, int height, int color, float opacity) {
-        if (width <= 0) width = 1;
-        if (height <= 0) height = 1;
-
-        float r = (color >> 16 & 255) / 255.0F;
-        float g = (color >> 8 & 255) / 255.0F;
-        float b = (color & 255) / 255.0F;
-        Tesselator tessellator = Tesselator.getInstance();
-        BufferBuilder buffer = tessellator.getBuilder();
-        Matrix4f model = matrices.last().pose();
-        RenderSystem.enableBlend();
-        RenderSystem.setShaderTexture(0, texture);
-        RenderSystem.setShaderColor(r, g, b, opacity);
-        RenderSystem.setShader(GameRenderer::getPositionTexShader);
-        buffer.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX);
-        buffer.vertex(model, x, y + height, 0).uv(u1, v2).endVertex();
-        buffer.vertex(model, x + width, y + height, 0).uv(u2, v2).endVertex();
-        buffer.vertex(model, x + width, y,0).uv(u2, v1).endVertex();
-        buffer.vertex(model, x, y,0).uv(u1, v1).endVertex();
-        buffer.end();
-        BufferUploader.end(buffer);
-        RenderSystem.disableBlend();
     }
 }
