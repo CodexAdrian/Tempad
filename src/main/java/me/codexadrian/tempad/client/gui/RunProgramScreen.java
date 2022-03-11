@@ -10,6 +10,7 @@ import me.codexadrian.tempad.tempad.LocationData;
 import me.codexadrian.tempad.tempad.TempadComponent;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.FriendlyByteBuf;
@@ -76,10 +77,7 @@ public class RunProgramScreen extends Screen {
             buf.writeEnum(hand);
             ClientPlayNetworking.send(Tempad.LOCATION_PACKET, buf);
             Minecraft.getInstance().setScreen(null);
-            //root.remove(addLocation);
-            //Minecraft.getInstance().setScreen(new TempadInterfaceGui(new RunProgramScreenDesc(false, null, hand, player, color)));
         });
-        //addRenderableWidget(debugButton);
         if(stack.hasTag()) {
             allLocations = new ArrayList<>(TempadComponent.fromStack(stack).getLocations());
             listSize = allLocations.size();
@@ -103,8 +101,11 @@ public class RunProgramScreen extends Screen {
             }
         }
 
-        //addRenderableWidget(new TimedoorSprite((width - WIDTH) / 2 + offset + 16 * 5, (height - HEIGHT) / 2 + offset + 16 * 2, color, 128));
+        TextButton addLocation = new TextButton((width - WIDTH) / 2 + offset + 16 * 15, (height - HEIGHT) / 2 + offset + 16 * 14, 12, new TranslatableComponent("gui." + Tempad.MODID + ".new_location"), color, (button)->{
+          minecraft.setScreen(new NewLocationScreen(color, hand));
+        });
 
+        addRenderableWidget(addLocation);
     }
 
     private void locationButtonOnPress(LocationData data) {
@@ -185,6 +186,20 @@ public class RunProgramScreen extends Screen {
         float blue = (color & 0xFF) / 255f;
         renderOutline(poseStack);
         renderGridBackground(poseStack, red, green, blue);
+        renderHeaders(poseStack);
+    }
+
+    private void renderHeaders(PoseStack matrices) {
+        Font font = minecraft.font;
+        int cornerX = (width - WIDTH) / 2 + 3;
+        int cornerY = (height - HEIGHT) / 2 + 3;
+        int x = cornerX + 16 * 15;
+        int y = cornerY + 16;
+        matrices.pushPose();
+        matrices.translate(x * (-0.5), y * (-0.5), 0);
+        matrices.scale(1.5F, 1.5F, 0);
+        drawString(matrices, font, new TranslatableComponent("gui." + Tempad.MODID + ".select_location"), x, y, color);
+        matrices.popPose();
     }
 
     @Override
