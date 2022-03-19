@@ -95,7 +95,7 @@ public class TimedoorEntity extends Entity {
                     Vec3 deltaMovement = entity.getDeltaMovement();
                     var pos = getLocation().getBlockPos();
                     if(destinationLevel != null ) {
-                        if (!getLocation().getLevelKey().location().equals(this.level.dimension().location())) {
+                        if (!getLocation().getLevelKey().equals(this.level.dimension())) {
                             FabricDimensions.teleport(entity, destinationLevel, new PortalInfo(new Vec3(pos.getX(), pos.getY(), pos.getZ()), deltaMovement, entity.getYRot(), entity.getXRot()));
                         } else {
                             entity.teleportToWithTicket(pos.getX(), pos.getY(), pos.getZ());
